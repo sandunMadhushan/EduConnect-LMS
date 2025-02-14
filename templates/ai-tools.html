@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Tools - University LMS</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+  </head>
+  <body>
+    <div class="dashboard">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="logo">
+          <img
+            src="{{ url_for('static', filename='images/logo.png') }}"
+            alt="Logo"
+          />
+        </div>
+        <ul class="menu">
+          <li>
+            <a href="{{ url_for('dashboard') }}" class="active">Dashboard</a>
+          </li>
+          <li><a href="{{ url_for('studygroups') }}">Study Groups</a></li>
+          <li>
+            <a href="{{ url_for('discussionforums') }}">Discussion Forums</a>
+          </li>
+          <li><a href="{{ url_for('aitools') }}">AI Tools</a></li>
+          <li><a href="{{ url_for('studysessions') }}">Study Sessions</a></li>
+          <li><a href="#">Profile</a></li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="header">
+          <h1>AI Tools</h1>
+          <p>Upload study materials for summarization and insights.</p>
+        </header>
+        <section class="content">
+          <div class="widget">
+            <h2>Summarize Content</h2>
+            <p>Upload a document or notes to get AI-powered summaries.</p>
+            <button>Upload</button>
+          </div>
+          <div class="widget">
+            <h2>AI Insights</h2>
+            <p>Generate insights or visualizations for your study material.</p>
+            <button>Generate Insights</button>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
