@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Study Groups - EduConnect LMS</title>
+    <title>All Study Groups - EduConnect LMS</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/styles.css') }}"
@@ -44,17 +44,19 @@
           <p>Collaborate with peers on specific topics and subjects.</p>
         </header>
         <section class="content">
-          <div class="widget">
-            <h2>Create a New Group</h2>
-            <p>
-              Start a group by selecting a topic, subject, and inviting members.
-            </p>
-            <button>Create Group</button>
-          </div>
-          <div class="widget">
-            <h2>Manage Existing Groups</h2>
-            <p>View and manage your current study groups.</p>
-            <a href="{{ url_for('ViewStudygroups') }}">View Groups</a>
+          <div >
+            <div>
+              {% for studygroup in studygroups %}
+              <div class="widget" style="text-align:left">
+                <h4>{{ studygroup['name'] }}</h4>
+                <p>
+                  <strong>Description:</strong> {{ studygroup['descripton'] }}
+                </p>
+                <p>
+                  <strong>Members:</strong> {{ studygroup['members'] }}
+                </p>
+              </div>
+              {% endfor %}
           </div>
         </section>
       </main>
