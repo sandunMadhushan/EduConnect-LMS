@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Authentication - EduConnect LMS</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+  </head>
+  <body class="body">
+    <div class="auth-container">
+      <div class="auth-card">
+        <!-- Toggle Buttons -->
+        <div class="toggle-buttons">
+          <button id="login-toggle" class="toggle-btn active">Login</button>
+          <button id="signup-toggle" class="toggle-btn">Sign Up</button>
+        </div>
+
+        <!-- Forms Container -->
+        <div class="forms-wrapper">
+          <!-- Login Form -->
+          <form id="login-form" class="auth-form active-form">
+            <h1>Login</h1>
+            <div class="form-group">
+              <label for="login-email">Email Address</label>
+              <input
+                type="email"
+                id="login-email"
+                name="email"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="login-password">Password</label>
+              <input
+                type="password"
+                id="login-password"
+                name="password"
+                placeholder="Enter your password"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <button type="submit" class="form-btn">Login</button>
+            </div>
+          </form>
+
+          <!-- Signup Form -->
+          <form id="signup-form" class="auth-form">
+            <h1>Sign Up</h1>
+            <div class="form-group">
+              <label for="signup-name">Full Name</label>
+              <input
+                type="text"
+                id="signup-name"
+                name="name"
+                placeholder="Enter your full name"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="signup-email">Email Address</label>
+              <input
+                type="email"
+                id="signup-email"
+                name="email"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="signup-password">Password</label>
+              <input
+                type="password"
+                id="signup-password"
+                name="password"
+                placeholder="Create a password"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="signup-confirm-password">Confirm Password</label>
+              <input
+                type="password"
+                id="signup-confirm-password"
+                name="confirm-password"
+                placeholder="Confirm your password"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <button type="submit" class="form-btn">Sign Up</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Get elements
+      const loginToggle = document.getElementById("login-toggle");
+      const signupToggle = document.getElementById("signup-toggle");
+      const formsWrapper = document.querySelector(".forms-wrapper");
+      const loginForm = document.getElementById("login-form");
+
+      // Add event listeners for toggling
+      loginToggle.addEventListener("click", () => {
+        formsWrapper.classList.remove("sign-up-mode"); // Reset to show login form
+        loginToggle.classList.add("active");
+        signupToggle.classList.remove("active");
+      });
+
+      signupToggle.addEventListener("click", () => {
+        formsWrapper.classList.add("sign-up-mode"); // Shift to show signup form
+        signupToggle.classList.add("active");
+        loginToggle.classList.remove("active");
+      });
+
+      // Add event listener for login form submission
+      loginForm.addEventListener("submit", (event) => {
+        event.preventDefault(); // Prevent the default form submission behavior
+
+        // Validate inputs
+        const email = document.getElementById("login-email").value;
+        const password = document.getElementById("login-password").value;
+
+        if (email.trim() === "" || password.trim() === "") {
+          alert("Please fill in all fields before logging in.");
+          return;
+        }
+
+        // Redirect to dashboard
+        window.location.href = "/dashboard";
+      });
+    </script>
+  </body>
+</html>
