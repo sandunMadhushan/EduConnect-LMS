@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Discussion Forums - University LMS</title>
+    <title>Discussion Forums - EduConnect LMS</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/styles.css') }}"
@@ -21,11 +21,13 @@
         </div>
         <ul class="menu">
           <li>
-            <a href="{{ url_for('dashboard') }}" class="active">Dashboard</a>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
           </li>
           <li><a href="{{ url_for('studygroups') }}">Study Groups</a></li>
           <li>
-            <a href="{{ url_for('discussionforums') }}">Discussion Forums</a>
+            <a href="{{ url_for('discussionforums') }}" class="active"
+              >Discussion Forums</a
+            >
           </li>
           <li><a href="{{ url_for('aitools') }}">AI Tools</a></li>
           <li><a href="{{ url_for('studysessions') }}">Study Sessions</a></li>
