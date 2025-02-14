@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study Sessions - University LMS</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+  </head>
+  <body>
+    <div class="dashboard">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="logo">
+          <img
+            src="{{ url_for('static', filename='images/logo.png') }}"
+            alt="Logo"
+          />
+        </div>
+        <ul class="menu">
+          <li>
+            <a href="{{ url_for('dashboard') }}" class="active">Dashboard</a>
+          </li>
+          <li><a href="{{ url_for('studygroups') }}">Study Groups</a></li>
+          <li>
+            <a href="{{ url_for('discussionforums') }}">Discussion Forums</a>
+          </li>
+          <li><a href="{{ url_for('aitools') }}">AI Tools</a></li>
+          <li><a href="{{ url_for('studysessions') }}">Study Sessions</a></li>
+          <li><a href="#">Profile</a></li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="header">
+          <h1>Study Sessions</h1>
+          <p>Schedule, track, and manage your study sessions.</p>
+        </header>
+        <section class="content">
+          <div class="widget">
+            <h2>Schedule a Session</h2>
+            <p>
+              Set a date and time for your individual or group study session.
+            </p>
+            <button>Schedule Now</button>
+          </div>
+          <div class="widget">
+            <h2>Track Time</h2>
+            <p>Use the study timer to stay focused and track progress.</p>
+            <button>Start Timer</button>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
