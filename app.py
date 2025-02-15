@@ -1,39 +1,16 @@
 from flask import Flask, render_template, request, redirect, url_for
+from database import engine
+from sqlalchemy import text
 
 app = Flask(__name__)
 
-STUDYGROUPS = [
-  {
-    'id': 1,
-    'name': 'Study Group 1',
-    'description': 'This is the first study group',
-    'members': ['John', 'Jane', 'Bob']
-  },
-  {
-    'id': 2,
-    'name': 'Study Group 2',
-    'description': 'This is the second study group',
-    'members': ['Alice', 'Charlie', 'David']
-  },
-  {
-    'id': 3,
-    'name': 'Study Group 3',
-    'description': 'This is the third study group',
-    'members': ['Eve', 'Frank', 'Grace']
-  },
-  {
-    'id': 4,
-    'name': 'Study Group 4',
-    'description': 'This is the fourth study group',
-    'members': ['Hannah', 'Ivy', 'Jack']
-  },
-  {
-    'id': 5,
-    'name': 'Study Group 5',
-    'description': 'This is the fifth study group',
-    'members': ['Karen', 'Liam', 'Mia']
-  }
-]
+def load_studygroups_from_db():
+  with engine.connect() as conn:
+    result = conn.execute(text("SELECT * FROM studygroups"))
+    studygroups = []
+    for row in result.all():
+      studygroups.append(dict(row))
+    return studygroups
 
 @app.route("/")
 def hello():
@@ -67,4 +44,5 @@ if __name__ == "__main__":
 
 @app.route('/study-groups/all')
 def ViewStudygroups():
-    return render_template('study-groups-view.html', studygroups=STUDYGROUPS)
+    studygroups = load_studygroups_from_db()
+    return render_template('study-groups-view.html', studygroups=studygroups)
