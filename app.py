@@ -44,5 +44,5 @@ if __name__ == "__main__":
 
 @app.route('/study-groups/all')
 def ViewStudygroups():
-    studygroups = load_studygroups_from_db()
-    return render_template('study-groups-view.html', studygroups=studygroups)
+    studygroups_list = load_studygroups_from_db()
+    return render_template('study-groups-view.html', studygroups=studygroups_list)
