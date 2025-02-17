@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for
-from database import engine
 from sqlalchemy import text
+from database import get_studygroups, create_studygroup
 
 app = Flask(__name__)
 
-from database import get_studygroups, create_studygroup
+
 
 def load_studygroups_from_db():
     results = get_studygroups()

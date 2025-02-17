@@ -17,17 +17,11 @@ import pymysql
 #       print(result.all())
 
 
-conn = pymysql.connect(
-    user='admineduconnectlms',
-    password='password.2109',
-    database='educonnect',
-    host='educonnectlms.mysql.database.azure.com',
-    ssl={'ssl': True},
-    connect_timeout=30,
-    read_timeout=30,
-    write_timeout=30,
-    retry={"max_attempts": 3, "delay": 5}
-)
+conn = pymysql.connect(user='admineduconnectlms',
+   password='password.2109',
+   database='educonnect',
+   host='educonnectlms.mysql.database.azure.com',
+   ssl={'ssl': True})
 
 def get_studygroups():
     try:
