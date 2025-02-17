@@ -1,2 +1,2 @@
 # EduConnect-LMS
-> [Visit](https://educonnect-lms.onrender.com/)
+> [👉 Live here](https://educonnect-lms.onrender.com/)
