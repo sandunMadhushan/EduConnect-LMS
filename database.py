@@ -21,7 +21,7 @@ conn = pymysql.connect(user='admineduconnectlms',
    password='password.2109',
    database='educonnect',
    host='educonnectlms.mysql.database.azure.com',
-   ssl={'ca': '/var/www/html/DigiCertGlobalRootCA.crt.pem'})
+   ssl={'ssl': True})
 
 def get_studygroups():
     try:
