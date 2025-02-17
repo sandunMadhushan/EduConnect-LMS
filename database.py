@@ -33,11 +33,11 @@ def get_studygroups():
         print(f"Error: {e}")
         return []
 
-def create_studygroup(name, description):
+def create_studygroup(name, description, members):
     try:
         with conn.cursor() as cursor:
-            sql = "INSERT INTO studygroups (name, description) VALUES (%s, %s)"
-            cursor.execute(sql, (name, description))
+            sql = "INSERT INTO studygroups (name, description, members) VALUES (%s, %s, %s)"
+            cursor.execute(sql, (name, description, members))
             conn.commit()
             return cursor.lastrowid
     except Exception as e:

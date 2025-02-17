@@ -52,7 +52,8 @@ def show_create_studygroup():
 def create_new_studygroup():
     name = request.form.get('name')
     description = request.form.get('description')
-    group_id = create_studygroup(name, description)
+    members = request.form.get('members')
+    group_id = create_studygroup(name, description, members)
     if group_id:
         return redirect(url_for('ViewStudygroups'))
     return "Error creating study group", 500
