@@ -4,8 +4,6 @@ from database import get_studygroups, create_studygroup
 
 app = Flask(__name__)
 
-
-
 def load_studygroups_from_db():
     results = get_studygroups()
     studygroups = []
@@ -52,7 +50,7 @@ def create_new_studygroup():
     description = request.form.get('description')
     group_id = create_studygroup(name, description)
     if group_id:
-        return redirect(url_for('ViewStudygroups'))
+        return render_template('create-study-group.html')
     return "Error creating study group", 500
 
 if __name__ == "__main__":
