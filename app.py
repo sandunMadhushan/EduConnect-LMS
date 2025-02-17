@@ -13,7 +13,8 @@ def load_studygroups_from_db():
         studygroups.append({
             'id': row[0],
             'name': row[1],
-            'description': row[2]
+            'description': row[2],
+            'members': row[3]
         })
     return studygroups
 
