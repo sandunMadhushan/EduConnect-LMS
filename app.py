@@ -44,13 +44,17 @@ def studysessions():
      return render_template('study-sessions.html')
 
 
+@app.route('/create-study-group', methods=['GET'])
+def show_create_studygroup():
+    return render_template('create-study-group.html')
+
 @app.route('/create-study-group', methods=['POST'])
 def create_new_studygroup():
     name = request.form.get('name')
     description = request.form.get('description')
     group_id = create_studygroup(name, description)
     if group_id:
-        return render_template('create-study-group.html')
+        return redirect(url_for('ViewStudygroups'))
     return "Error creating study group", 500
 
 if __name__ == "__main__":
