@@ -22,3 +22,28 @@ conn = pymysql.connect(user='admineduconnectlms',
    database='educonnect',
    host='educonnectlms.mysql.database.azure.com',
    ssl={'ca': '/var/www/html/DigiCertGlobalRootCA.crt.pem'})
+
+def get_studygroups():
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT * FROM studygroups")
+            results = cursor.fetchall()
+            return results
+    except Exception as e:
+        print(f"Error: {e}")
+        return []
+
+def create_studygroup(name, description):
+    try:
+        with conn.cursor() as cursor:
+            sql = "INSERT INTO studygroups (name, description) VALUES (%s, %s)"
+            cursor.execute(sql, (name, description))
+            conn.commit()
+            return cursor.lastrowid
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+
+def close_connection():
+    if conn:
+        conn.close()

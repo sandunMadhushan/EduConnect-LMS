@@ -4,13 +4,18 @@ from sqlalchemy import text
 
 app = Flask(__name__)
 
+from database import get_studygroups, create_studygroup
+
 def load_studygroups_from_db():
-   with engine.connect() as conn:
-     result = conn.execute(text("SELECT * FROM studygroups"))
-     studygroups = []
-     for row in result.all():
-       studygroups.append(dict(row))
-     return studygroups
+    results = get_studygroups()
+    studygroups = []
+    for row in results:
+        studygroups.append({
+            'id': row[0],
+            'name': row[1],
+            'description': row[2]
+        })
+    return studygroups
 
 @app.route("/")
 def hello():
@@ -38,6 +43,16 @@ def aitools():
 @app.route('/study-sessions')
 def studysessions():
      return render_template('study-sessions.html')
+
+
+@app.route('/create-study-group', methods=['POST'])
+def create_new_studygroup():
+    name = request.form.get('name')
+    description = request.form.get('description')
+    group_id = create_studygroup(name, description)
+    if group_id:
+        return redirect(url_for('ViewStudygroups'))
+    return "Error creating study group", 500
 
 if __name__ == "__main__":
      app.run(host='0.0.0.0',debug=True)
