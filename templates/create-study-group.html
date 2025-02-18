@@ -29,16 +29,16 @@
         </header>
         <section class="content">
           <div class="widget">
-            <form action="{{ url_for('create_new_studygroup') }}" method="POST">
-              <div>
+            <form action="{{ url_for('create_new_studygroup') }}" method="POST" class="create-group">
+              <div class="grp-name">
                 <label for="name">Group Name:</label>
                 <input type="text" id="name" name="name" required>
               </div>
-              <div>
+              <div class="grp-name">
                 <label for="description">Description:</label>
                 <textarea id="description" name="description" required></textarea>
               </div>
-              <div>
+              <div class="grp-name">
                 <label for="members">Members:</label>
                 <textarea id="members" name="members" required></textarea>
               </div>

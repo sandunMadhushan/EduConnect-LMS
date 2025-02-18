@@ -286,6 +286,23 @@ a {
   background: #1d3557;
 }
 
+/* create study groups */
+
+.create-group label{
+  font-size: 1em;
+  color: #6c757d;
+  margin-right: 8px;
+}
+
+.grp-name {
+  padding:10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+
 /* Animation States */
 .forms-wrapper.sign-up-mode {
   transform: translateX(-50%); /* Moves to show the signup form */
