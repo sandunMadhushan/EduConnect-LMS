@@ -1,5 +1,7 @@
 from sqlalchemy import create_engine, text
 import pymysql
+from dotenv import load_dotenv
+import os
 
 # engine = create_engine('mysql+pymysql://admineduconnectlms:password.2109@educonnectlms.mysql.database.azure.com/educonnect')
 
@@ -17,8 +19,7 @@ import pymysql
 #       print(result.all())
 
 
-from dotenv import load_dotenv
-import os
+
 
 load_dotenv()
 
