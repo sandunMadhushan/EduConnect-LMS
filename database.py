@@ -1,7 +1,6 @@
-
-from sqlalchemy import create_engine, text
-import pymysql
 from dotenv import load_dotenv
+import pymysql
+from sqlalchemy import create_engine, text
 import os
 
 # Load environment variables
