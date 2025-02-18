@@ -59,7 +59,7 @@ def create_new_studygroup():
     return "Error creating study group", 500
 
 if __name__ == "__main__":
-     app.run(host='0.0.0.0',debug=True)
+     app.run()
 
 @app.route('/study-groups/all')
 def ViewStudygroups():
