@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
   </head>
   <body>
+    <div class="spinner-container">
+      <div class="spinner-content">
+        <div class="spinner-wrapper">
+          <div class="spinner"></div>
+        </div>
+        <div class="spinner-text">Generating Summary...</div>
+      </div>
+    </div>
     <div class="dashboard">
       <aside class="sidebar">
         <div class="logo">
@@ -49,22 +57,6 @@
     </div>
 
     <script>
-      /*function summarize() {
-        let formData = new FormData();
-        formData.append("description", document.getElementById("description").value);
-        formData.append("upload", document.getElementById("upload").files[0]);
-
-        fetch("/summarize", {
-          method: "POST",
-          body: formData,
-        })
-        .then(response => response.json())
-        .then(data => {
-          document.getElementById("summary").value = data.summary;
-        })
-        .catch(error => console.error("Error:", error));
-      }*/
-
       document.getElementById("summarization-form").addEventListener("submit", function (e) {
         e.preventDefault();
     
@@ -77,6 +69,9 @@
         let formData = new FormData();
         formData.append("upload", fileInput);
         formData.append("description", document.querySelector('textarea[name="description"]').value);
+
+        // Show spinner
+        document.querySelector('.spinner-container').style.display = 'flex';
     
         fetch("/summarize-content", {
             method: "POST",
@@ -84,6 +79,9 @@
         })
         .then(response => response.json())
         .then(data => {
+          // Hide spinner
+          document.querySelector('.spinner-container').style.display = 'none';
+          
             let summaryTextarea = document.getElementById("summaryResult");
             if (data.summary) {
                 summaryTextarea.value = data.summary;
@@ -92,7 +90,12 @@
                 alert("Error: " + data.error);
             }
         })
-        .catch(error => console.error("Error:", error));
+        .catch(error => {
+                    // Hide spinner
+                  document.querySelector('.spinner-container').style.display = 'none';
+                  console.error("Error:", error);
+                  alert("An error occurred while generating the summary.");
+                });
     });
     
     function adjustSummaryHeight() {
