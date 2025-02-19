@@ -32,15 +32,15 @@
             <form action="{{ url_for('create_new_studygroup') }}" method="POST" class="create-group">
               <div class="grp-name">
                 <label for="name">Group Name:</label>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="name" required class="form-textarea">
               </div>
               <div class="grp-name">
                 <label for="description">Description:</label>
-                <textarea id="description" name="description" required></textarea>
+                <textarea id="description" name="description" required class="form-textarea"></textarea>
               </div>
               <div class="grp-name">
                 <label for="members">Members:</label>
-                <textarea id="members" name="members" required></textarea>
+                <textarea id="members" name="members" required class="form-textarea"></textarea>
               </div>
               <button type="submit">Create Group</button>
             </form>
@@ -48,5 +48,6 @@
         </section>
       </main>
     </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
   </body>
 </html>
