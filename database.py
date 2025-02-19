@@ -42,6 +42,44 @@ def create_studygroup(name, description, members):
     except Exception as e:
         print(f"Error: {e}")
         return None
+    
+def db_post_a_question(title, category, description):
+    if not conn:
+        return None
+    try:
+        with conn.cursor() as cursor:
+            sql = "INSERT INTO questions (title, category, description) VALUES (%s, %s, %s)"
+            cursor.execute(sql, (title, category, description))
+            conn.commit()
+            return cursor.lastrowid
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+
+def get_questions_by_category(category):
+    if not conn:
+        return []
+    try:
+        with conn.cursor() as cursor:
+            sql = "SELECT * FROM questions WHERE category = %s"
+            cursor.execute(sql, (category))
+            results = cursor.fetchall()
+            return results
+    except Exception as e:
+        print(f"Error: {e}")
+        return []
+    
+def get_all_questions():
+    if not conn:
+        return []
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT * FROM questions")
+            results = cursor.fetchall()
+            return results
+    except Exception as e:
+        print(f"Error: {e}")
+        return []
 
 def close_connection():
     if conn:

@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from sqlalchemy import text
-from database import get_studygroups, create_studygroup
+from database import get_studygroups, create_studygroup, db_post_a_question, get_all_questions
 
 app = Flask(__name__)
 
@@ -15,6 +15,18 @@ def load_studygroups_from_db():
             'members': row[3]
         })
     return studygroups
+
+def load_questions_from_db():
+    results = get_all_questions()
+    questions = []
+    for row in results:
+        questions.append({
+            'id': row[0],
+            'title': row[1],
+            'category': row[2],
+            'description': row[3]
+        })
+    return questions
 
 @app.route("/")
 def hello():
@@ -66,9 +78,19 @@ def ViewStudygroups():
      studygroups_list = load_studygroups_from_db()
      return render_template('study-groups-view.html', studygroups=studygroups_list)
 
-@app.route('/post-a-question')
-def post_a_question():
+@app.route('/post-a-question', methods=['GET'])
+def show_post_a_question():
     return render_template('post-a-question.html')
+
+@app.route('/post-a-question', methods=['POST'])
+def post_a_question():
+    title = request.form.get('title')
+    category = request.form.get('category')
+    question = request.form.get('question')
+    q_id = db_post_a_question(title, category, question)
+    # if q_id:
+    #     return redirect(url_for('ViewQuestions'))
+    return "Successfully posted your question!", 200
 
 @app.route('/summarize-content')
 def summarization_form():
@@ -86,3 +108,8 @@ def schedule_session():
 def profile():
     user = {'username': 'Miguel'}
     return render_template('profile.html, user=user')
+
+@app.route('/browse-forum/all')
+def ViewQuestions():
+    questions_list = load_questions_from_db()
+    return render_template('browse-forum.html', questions=questions_list)

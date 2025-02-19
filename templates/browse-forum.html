@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Discussion Forums - EduConnect LMS</title>
+    <title>All Questions - EduConnect LMS</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/styles.css') }}"
@@ -23,11 +23,13 @@
           <li>
             <a href="{{ url_for('dashboard') }}">Dashboard</a>
           </li>
-          <li><a href="{{ url_for('studygroups') }}">Study Groups</a></li>
           <li>
-            <a href="{{ url_for('discussionforums') }}" class="active"
-              >Discussion Forums</a
+            <a href="{{ url_for('studygroups') }}" 
+              >Study Groups</a
             >
+          </li>
+          <li>
+            <a href="{{ url_for('discussionforums') }}" class="active">Discussion Forums</a>
           </li>
           <li><a href="{{ url_for('aitools') }}">AI Tools</a></li>
           <li><a href="{{ url_for('studysessions') }}">Study Sessions</a></li>
@@ -38,19 +40,23 @@
       <!-- Main Content -->
       <main class="main-content">
         <header class="header">
-          <h1>Discussion Forums</h1>
-          <p>Ask questions and get answers from peers or lecturers.</p>
+          <h1>Forums</h1>
+          <p>All posted forum qustions are listed</p>
         </header>
         <section class="content">
-          <div class="widget">
-            <h2>Post a Question</h2>
-            <p>Create a new discussion thread and engage with others.</p>
-            <a href="{{ url_for('post_a_question') }}">Post Now</a>
-          </div>
-          <div class="widget">
-            <h2>Browse Forums</h2>
-            <p>Explore and contribute to existing forum threads.</p>
-            <a href="{{ url_for('ViewQuestions') }}">Browse Forums</a>
+          <div >
+            <div>
+              {% for question in questions %}
+              <div class="widget" style="text-align:left">
+                <h4>{{ question['title'] }}</h4>
+                <p>
+                  <strong>Category:</strong> {{ question['category'] }}
+                </p>
+                <p>
+                  <strong>Description:</strong> {{ question['description'] }}
+                </p>
+              </div>
+              {% endfor %}
           </div>
         </section>
       </main>
