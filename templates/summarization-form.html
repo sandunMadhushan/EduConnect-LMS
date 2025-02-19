@@ -28,19 +28,19 @@
         </header>
         <section class="content">
           <div class="widget ai-tools-widget">
-            <form id="summarization-form" enctype="multipart/form-data">
+            <form id="summarization-form" enctype="multipart/form-data" action="{{ url_for('summarization_form') }}" method="POST" class="summarization-form">
               <div class="form-group">
                 <label for="description">Description:</label>
                 <textarea id="description" name="description" required class="form-textarea"></textarea>
               </div>
               <div class="form-group">
                 <label for="upload">Upload Study Material (Image):</label>
-                <input type="file" id="upload" name="upload" accept="image/*" class="form-file-input" required>
+                <input type="file" id="upload" name="upload" accept=".txt,.pdf,.docx" class="form-file-input" required>
               </div>
-              <button type="button" class="form-btn" onclick="summarize()">Summarize</button>
+              <button type="submit" class="form-btn">Summarize</button>
               <div class="form-group">
                 <label for="summary">Summarization:</label>
-                <textarea id="summary" name="summary" class="form-textarea" readonly></textarea>
+                <textarea id="summaryResult" name="summary" class="form-textarea" readonly></textarea>
               </div>
             </form>
           </div>
@@ -49,7 +49,7 @@
     </div>
 
     <script>
-      function summarize() {
+      /*function summarize() {
         let formData = new FormData();
         formData.append("description", document.getElementById("description").value);
         formData.append("upload", document.getElementById("upload").files[0]);
@@ -63,7 +63,37 @@
           document.getElementById("summary").value = data.summary;
         })
         .catch(error => console.error("Error:", error));
-      }
+      }*/
+
+      document.getElementById("summarization-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+    
+        let fileInput = document.getElementById("upload").files[0];
+        if (!fileInput) {
+            alert("Please select a file.");
+            return;
+        }
+    
+        let formData = new FormData();
+        formData.append("upload", fileInput);
+    
+        fetch("/summarize-content", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.summary) {
+                document.getElementById("summaryResult").innerText = "Summary: " + data.summary;
+            } else {
+                alert("Error: " + data.error);
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+    
+    
+
     </script>
   </body>
 </html>

@@ -5,3 +5,6 @@ pymysql
 mysql-connector-python
 flask-sqlalchemy
 python-dotenv
+openai
+python-docx 
+PyPDF2
