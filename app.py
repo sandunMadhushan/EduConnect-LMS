@@ -65,3 +65,24 @@ if __name__ == "__main__":
 def ViewStudygroups():
      studygroups_list = load_studygroups_from_db()
      return render_template('study-groups-view.html', studygroups=studygroups_list)
+
+@app.route('/post-a-question')
+def post_a_question():
+    return render_template('post-a-question.html')
+
+@app.route('/summarize-content')
+def summarization_form():
+    return render_template('summarization-form.html')
+
+@app.route('/generate-insights')
+def insights_form():
+    return render_template('insights.html')
+
+@app.route('/schedule-session')
+def schedule_session():
+    return render_template('schedule-session.html')
+
+@app.route('/profile')
+def profile():
+    user = {'username': 'Miguel'}
+    return render_template('profile.html, user=user')

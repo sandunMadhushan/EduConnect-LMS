@@ -31,7 +31,7 @@
           </li>
           <li><a href="{{ url_for('aitools') }}">AI Tools</a></li>
           <li><a href="{{ url_for('studysessions') }}">Study Sessions</a></li>
-          <li><a href="#">Profile</a></li>
+          <li><a href="{{ url_for('profile') }}">Profile</a></li>
         </ul>
       </aside>
 
@@ -45,12 +45,12 @@
           <div class="widget">
             <h2>Post a Question</h2>
             <p>Create a new discussion thread and engage with others.</p>
-            <button>Post Now</button>
+            <a href="{{ url_for('post_a_question') }}">Post Now</a>
           </div>
           <div class="widget">
             <h2>Browse Forums</h2>
             <p>Explore and contribute to existing forum threads.</p>
-            <button>Browse Forums</button>
+            <a href="#">Browse Forums</a>
           </div>
         </section>
       </main>

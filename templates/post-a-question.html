@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Post a Question - EduConnect LMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  </head>
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="logo">
+          <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" />
+        </div>
+        <ul class="menu">
+          <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+          <li><a href="{{ url_for('studygroups') }}">Study Groups</a></li>
+          <li><a href="{{ url_for('discussionforums') }}" class="active">Discussion Forum</a></li>
+          <li><a href="{{ url_for('aitools') }}">AI Tools</a></li>
+          <li><a href="{{ url_for('studysessions') }}">Study Sessions</a></li>
+          <li><a href="{{ url_for('profile') }}">Profile</a></li>
+        </ul>
+      </aside>
+      <main class="main-content">
+        <header class="header">
+          <h1>Post a Question</h1>
+          <p>Create a new discussion thread and engage with others.</p>
+        </header>
+        <section class="content">
+          <div class="widget post-question-widget">
+            <form action="{{ url_for('post_a_question') }}" method="POST" class="post-question">
+              <div class="form-group">
+                <label for="title">Question Title:</label>
+                <input type="text" id="title" name="title" required class="form-input short-input">
+              </div>
+              <div class="form-group">
+                <label for="category">Category:</label>
+                <select id="category" name="category" required class="form-select large-select">
+                  <option value="general">General</option>
+                  <option value="science">Science</option>
+                  <option value="math">Math</option>
+                  <option value="history">History</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="description">Question:</label>
+                <textarea id="description" name="description" required class="form-textarea wide-textarea"></textarea>
+              </div>
+              <button type="submit" class="form-btn normal-btn">Post Question</button>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

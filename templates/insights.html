@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Insights - EduConnect LMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  </head>
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="logo">
+          <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" />
+        </div>
+        <ul class="menu">
+          <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+          <li><a href="{{ url_for('studygroups') }}">Study Groups</a></li>
+          <li><a href="{{ url_for('discussionforums') }}">Discussion Forum</a></li>
+          <li><a href="{{ url_for('aitools') }}" class="active">AI Tools</a></li>
+          <li><a href="{{ url_for('studysessions') }}">Study Sessions</a></li>
+          <li><a href="{{ url_for('profile') }}">Profile</a></li>
+        </ul>
+      </aside>
+      <main class="main-content">
+        <header class="header">
+          <h1>AI Insights</h1>
+          <p>Generate insights or visualizations for your study material.</p>
+        </header>
+        <section class="content">
+          <div class="widget ai-tools-widget">
+            <form id="insights-form" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="study-text">Study Material:</label>
+                <textarea id="study-text" name="study-text" required class="form-textarea"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="upload">Upload Image (Optional):</label>
+                <input type="file" id="upload" name="upload" accept="image/*" class="form-file-input">
+              </div>
+              <button type="button" class="form-btn" onclick="generateInsights()">Generate Insights</button>
+              <div class="form-group">
+                <label for="insights">AI Insights:</label>
+                <textarea id="insights" name="insights" class="form-textarea" readonly></textarea>
+              </div>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      function generateInsights() {
+        let formData = new FormData();
+        formData.append("study-text", document.getElementById("study-text").value);
+        formData.append("upload", document.getElementById("upload").files[0]);
+
+        fetch("/generate_insights", {
+          method: "POST",
+          body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("insights").value = data.insights;
+        })
+        .catch(error => console.error("Error:", error));
+      }
+    </script>
+  </body>
+</html>

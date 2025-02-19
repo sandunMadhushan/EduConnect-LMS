@@ -31,7 +31,7 @@
             <a href="{{ url_for('aitools') }}" class="active">AI Tools</a>
           </li>
           <li><a href="{{ url_for('studysessions') }}">Study Sessions</a></li>
-          <li><a href="#">Profile</a></li>
+          <li><a href="{{ url_for('profile') }}">Profile</a></li>
         </ul>
       </aside>
 
@@ -45,12 +45,12 @@
           <div class="widget">
             <h2>Summarize Content</h2>
             <p>Upload a document or notes to get AI-powered summaries.</p>
-            <button>Upload</button>
+            <a href="{{ url_for('summarization_form') }}">Upload</a>
           </div>
           <div class="widget">
             <h2>AI Insights</h2>
             <p>Generate insights or visualizations for your study material.</p>
-            <button>Generate Insights</button>
+            <a href="{{ url_for('insights_form') }}">Generate Insights</a>
           </div>
         </section>
       </main>

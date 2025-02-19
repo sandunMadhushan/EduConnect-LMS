@@ -33,7 +33,7 @@
               >Study Sessions</a
             >
           </li>
-          <li><a href="#">Profile</a></li>
+          <li><a href="{{ url_for('profile') }}">Profile</a></li>
         </ul>
       </aside>
 
@@ -49,7 +49,7 @@
             <p>
               Set a date and time for your individual or group study session.
             </p>
-            <button>Schedule Now</button>
+            <a href="{{ url_for('schedule_session') }}">Schedule Now</a>
           </div>
           <div class="widget">
             <h2>Track Time</h2>
