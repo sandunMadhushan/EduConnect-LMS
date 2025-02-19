@@ -303,8 +303,10 @@ a {
 }
 
 .form-textarea {
-  width: 100%;
+  width: 90%;
   padding: 12px;
+  margin: auto;
+  /* margin-right: 10px; */
   border: 1px solid #ced4da;
   border-radius: 8px;
   font-size: 1em;
@@ -312,8 +314,13 @@ a {
   background: #f9fafc;
   transition: border-color 0.3s ease;
 }
-
-
+.form-btn{
+  width: 20%;
+  margin-bottom: 20px;
+}
+#summaryResult{
+  padding: auto;
+}
 /* Animation States */
 .forms-wrapper.sign-up-mode {
   transform: translateX(-50%); /* Moves to show the signup form */

@@ -33,9 +33,9 @@
                 <label for="description">Description:</label>
                 <textarea id="description" name="description" required class="form-textarea"></textarea>
               </div>
-              <div class="form-group">
+              <div class="form-group" id="upload-group">
                 <label for="upload">Upload Study Material (.txt,.pdf,.docx):</label>
-                <input type="file" id="upload" name="upload" accept=".txt,.pdf,.docx" class="form-file-input" required>
+                <input type="file" id="upload" name="upload" accept=".txt,.pdf,.docx" class="form-file-input" required style="width: 90%">
               </div>
               <button type="submit" class="form-btn">Summarize</button>
               <div class="form-group">
@@ -76,7 +76,7 @@
     
         let formData = new FormData();
         formData.append("upload", fileInput);
-        formData.append('description', document.querySelector('textarea[name="description"]').value);
+        formData.append("description", document.querySelector('textarea[name="description"]').value);
     
         fetch("/summarize-content", {
             method: "POST",
@@ -84,8 +84,10 @@
         })
         .then(response => response.json())
         .then(data => {
+            let summaryTextarea = document.getElementById("summaryResult");
             if (data.summary) {
-                document.getElementById("summaryResult").innerText = "Summary: " + data.summary;
+                summaryTextarea.value = data.summary;
+                adjustSummaryHeight(); 
             } else {
                 alert("Error: " + data.error);
             }
@@ -93,13 +95,27 @@
         .catch(error => console.error("Error:", error));
     });
     
+    function adjustSummaryHeight() {
+        let summaryTextarea = document.getElementById("summaryResult");
+        if (summaryTextarea) {
+            summaryTextarea.style.height = "auto";
+            summaryTextarea.style.height = summaryTextarea.scrollHeight + "px";
+        }
+    }
+    
+    // Function to adjust height dynamically
+    function adjustHeight(textarea) {
+        textarea.style.height = "auto"; 
+        textarea.style.height = textarea.scrollHeight + "px";
+    }
+    
     function handleSubmit(event) {
       const description = document.querySelector('textarea[name="description"]').value;
       console.log('Description:', description);
 
       if (!description) {
           alert('Please enter a description');
-          event.preventDefault(); // Prevent form submission if no description is entered
+          event.preventDefault();
       }
   }
 
