@@ -31,14 +31,14 @@
             <form action="{{ url_for('schedule_session') }}" method="POST" class="schedule-form">
               <div class="form-group">
                 <label for="session-type">Session Type:</label>
-                <select id="session-type" name="session-type" required class="form-select">
+                <select id="session-type" name="session-type" required class="form-select form-textarea">
                   <option value="individual">Individual</option>
                   <option value="group">Group</option>
                 </select>
               </div>
               <div class="form-group">
                 <label for="topic">Session Topic:</label>
-                <input type="text" id="topic" name="topic" required class="form-input">
+                <input type="text" id="topic" name="topic" required class="form-input form-textarea">
               </div>
               <div class="form-group">
                 <label for="description">Description:</label>
@@ -46,11 +46,11 @@
               </div>
               <div class="form-group">
                 <label for="date">Date:</label>
-                <input type="date" id="date" name="date" required class="form-input">
+                <input type="date" id="date" name="date" required class="form-input form-textarea">
               </div>
               <div class="form-group">
                 <label for="time">Time:</label>
-                <input type="time" id="time" name="time" required class="form-input">
+                <input type="time" id="time" name="time" required class="form-input form-textarea">
               </div>
               <button type="submit" class="form-btn">Schedule Session</button>
             </form>
