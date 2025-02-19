@@ -34,7 +34,7 @@
                 <textarea id="description" name="description" required class="form-textarea"></textarea>
               </div>
               <div class="form-group">
-                <label for="upload">Upload Study Material (Image):</label>
+                <label for="upload">Upload Study Material (.txt,.pdf,.docx):</label>
                 <input type="file" id="upload" name="upload" accept=".txt,.pdf,.docx" class="form-file-input" required>
               </div>
               <button type="submit" class="form-btn">Summarize</button>
@@ -76,6 +76,7 @@
     
         let formData = new FormData();
         formData.append("upload", fileInput);
+        formData.append('description', document.querySelector('textarea[name="description"]').value);
     
         fetch("/summarize-content", {
             method: "POST",
@@ -92,7 +93,17 @@
         .catch(error => console.error("Error:", error));
     });
     
-    
+    function handleSubmit(event) {
+      const description = document.querySelector('textarea[name="description"]').value;
+      console.log('Description:', description);
+
+      if (!description) {
+          alert('Please enter a description');
+          event.preventDefault(); // Prevent form submission if no description is entered
+      }
+  }
+
+  document.querySelector('form').addEventListener('submit', handleSubmit);
 
     </script>
   </body>

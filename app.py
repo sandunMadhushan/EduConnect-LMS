@@ -106,36 +106,78 @@ def post_a_question():
     #     return redirect(url_for('ViewQuestions'))
     return "Successfully posted your question!", 200
 
+# @app.route('/summarize-content', methods=['GET', 'POST'])
+# def summarization_form():
+#     if request.method == 'GET':
+#         return render_template('summarization-form.html')  # Show the form
+
+#     if 'upload' not in request.files:
+#         return jsonify({'error': 'No file uploaded'}), 400
+
+#     upload = request.files['upload']
+
+#     if upload.filename == '':
+#         return jsonify({'error': 'No selected file'}), 400
+
+#     # Ensure the uploads directory exists
+#     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+
+#     file_path = os.path.join(app.config["UPLOAD_FOLDER"], upload.filename)
+#     upload.save(file_path)
+
+#     # Extract text from the uploaded file (assuming extract_text is defined)
+#     text = extract_text(file_path)
+
+#     if not text:
+#         return jsonify({'error': 'Unable to extract text from the file'}), 400
+    
+#     print(request.form)
+
+#      # Get the custom instruction (description) from the form
+#     description = request.form.get('description')
+    
+#     print(f"Description: {description}") 
+
+#     if not description:
+#         return jsonify({'error': 'No description provided'}), 400
+
+#     # Summarize the extracted text with the custom description
+#     summary = summarize_text(text, description)
+
+#     # return render_template('summarization-form.html', summary=summary)
+#     return jsonify({'summary': summary})
+
 @app.route('/summarize-content', methods=['GET', 'POST'])
 def summarization_form():
-    if request.method == 'GET':
-        return render_template('summarization-form.html')  # Show the form
+    if request.method == 'POST':
+        # Debugging the form data and file
+        print("Form data:", request.form)
+        print("Files:", request.files)
 
-    if 'upload' not in request.files:
-        return jsonify({'error': 'No file uploaded'}), 400
+        description = request.form.get('description')
+        file = request.files.get('upload')
 
-    upload = request.files['upload']
+        if not description:
+            return jsonify({'error': 'Description is required'}), 400
 
-    if upload.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
+        if not file:
+            return jsonify({'error': 'No file uploaded'}), 400
 
-    # Ensure the uploads directory exists
-    os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+        # Assuming extract_text is defined
+        file_path = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
+        file.save(file_path)
 
-    file_path = os.path.join(app.config["UPLOAD_FOLDER"], upload.filename)
-    upload.save(file_path)
+        text = extract_text(file_path)
 
-    # Extract text from the uploaded file (assuming extract_text is defined)
-    text = extract_text(file_path)
+        if not text:
+            return jsonify({'error': 'Unable to extract text from the file'}), 400
 
-    if not text:
-        return jsonify({'error': 'Unable to extract text from the file'}), 400
+        summary = summarize_text(text, description)
 
-    # Summarize the extracted text (assuming summarize_text is defined)
-    summary = summarize_text(text)
+        return jsonify({'summary': summary})
 
-    # return render_template('summarization-form.html', summary=summary)
-    return jsonify({'summary': summary})
+    return render_template('summarization-form.html')
+
 
 
 @app.route('/generate-insights')
@@ -169,11 +211,16 @@ def allowed_file(filename):
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-def summarize_text(text):
+def summarize_text(text, description):
     try:
+        
+        prompt = f"{description}\n\nText to summarize: {text}"
+        
         response = openai.ChatCompletion.create(
             model="gpt-4o-mini",
-            messages=[{"role": "user", "content": text}],
+            messages=[{"role": "user", "content": text},
+                      {"role": "user", "content": prompt}
+                      ],
         )
         return response.choices[0].message["content"]
     except RateLimitError:
