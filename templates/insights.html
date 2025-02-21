@@ -19,12 +19,15 @@
           <li><a href="{{ url_for('aitools') }}" class="active">AI Tools</a></li>
           <li><a href="{{ url_for('studysessions') }}">Study Sessions</a></li>
           <li><a href="{{ url_for('profile') }}">Profile</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
         </ul>
       </aside>
       <main class="main-content">
         <header class="header">
-          <h1>AI Insights</h1>
-          <p>Generate insights or visualizations for your study material.</p>
+          <div class="header-text">
+            <h1>AI Insights</h1>
+            <p>Generate insights or visualizations for your study material.</p>
+          </div>
         </header>
         <section class="content">
           <div class="widget ai-tools-widget">

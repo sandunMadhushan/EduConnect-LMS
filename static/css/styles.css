@@ -73,7 +73,19 @@ a {
 .header {
   margin-bottom: 30px;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;  
+  align-items: center;            
+  padding: 20px;                  
+}
+
+.header-text {
+  flex: 1;                       
+}
+
+.profile-pic {
+  margin-left: 20px;              
+  display: flex;
+  justify-content: flex-end;     
 }
 
 .header h1 {
@@ -413,4 +425,39 @@ a {
   font-weight: 500;
   width: 100%;  
   white-space: nowrap;
+}
+
+.alert {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  position: fixed;  /* Position fixed at the top */
+  top: 10px;        /* 10px from the top */
+  left: 50%;        /* Center horizontally */
+  transform: translateX(-50%);  /* Adjust for exact centering */
+  z-index: 9999;    /* Ensure the alert is on top */
+}
+
+.alert-error {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.alert-success {
+  background-color: #dcfce7;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+
+.profile-pic-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
 }
