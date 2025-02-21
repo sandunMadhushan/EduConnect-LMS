@@ -78,7 +78,7 @@ EduConnect-LMS is a collaborative learning management system designed to facilit
 
 4. Run the application:
     ```bash
-    python app.py
+    flask run
     ```
 
 ## 🔄 Development Status
