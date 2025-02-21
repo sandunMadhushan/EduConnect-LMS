@@ -10,6 +10,7 @@ body {
   background-color: #f5f6fa;
   color: #2c3e50;
   letter-spacing: -0.7px;
+  user-select: none;
 }
 
 a {
