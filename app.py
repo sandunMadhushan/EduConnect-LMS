@@ -1,7 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
 from sqlalchemy import text
-from database import get_studygroups, create_studygroup, db_post_a_question, get_all_questions
-
+from database import get_studygroups, create_studygroup, db_post_a_question, get_all_questions,  register_user, login_user, get_user_by_id
 import openai
 # from openai import OpenAI
 import os
@@ -9,14 +8,25 @@ from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
 from PyPDF2 import PdfReader
 from docx import Document
-
 import time
 from openai.error import RateLimitError
+from functools import wraps
 
 # Load environment variables
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = os.getenv('SECRET_KEY')
+
+# Login required decorator
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            flash('Please log in to access this page', 'error')
+            return redirect(url_for('index'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 def load_studygroups_from_db():
     results = get_studygroups()
@@ -43,38 +53,85 @@ def load_questions_from_db():
     return questions
 
 @app.route("/")
-def hello():
-     return render_template("index.html")
+def index():
+    if 'user_id' in session:
+        return redirect(url_for('dashboard'))
+    return render_template("index.html")
+
+@app.route('/login', methods=['POST'])
+def login():
+    email = request.form.get('email')
+    password = request.form.get('password')
+    
+    user = login_user(email, password)
+    if user:
+        session['user_id'] = user['id']
+        session['user_name'] = user['name']
+        session['user_email'] = user['email']
+        return redirect(url_for('dashboard'))
+    else:
+        flash('Invalid email or password', 'error')
+        return redirect(url_for('index'))
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    name = request.form.get('name')
+    email = request.form.get('email')
+    password = request.form.get('password')
+    confirm_password = request.form.get('confirm-password')
+    
+    if password != confirm_password:
+        flash('Passwords do not match', 'error')
+        return redirect(url_for('hello'))
+    
+    user_id = register_user(name, email, None, password)  # Address is optional
+    if user_id:
+        session['user_id'] = user_id
+        session['user_name'] = name
+        session['user_email'] = email
+        return redirect(url_for('dashboard'))
+    else:
+        flash('Registration failed. Email might already be registered.', 'error')
+        return redirect(url_for('index'))
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
 
 @app.route("/dashboard")
+@login_required
 def dashboard():
-     return render_template("dashboard.html")
+    user = get_user_by_id(session['user_id'])
+    return render_template("dashboard.html", user=user)
   
 @app.route('/study-groups')
+@login_required
 def studygroups():
-     return render_template('study-groups.html')
+    return render_template('study-groups.html')
 
-# Route for Discussion Forums
 @app.route('/discussion-forums')
+@login_required
 def discussionforums():
-     return render_template('discussion-forums.html')
+    return render_template('discussion-forums.html')
 
-# Route for AI Tools
 @app.route('/ai-tools')
+@login_required
 def aitools():
-     return render_template('ai-tools.html')
+    return render_template('ai-tools.html')
 
-# Route for Study Sessions
 @app.route('/study-sessions')
+@login_required
 def studysessions():
-     return render_template('study-sessions.html')
+    return render_template('study-sessions.html')
 
 
 @app.route('/create-study-group', methods=['GET'])
+@login_required
 def show_create_studygroup():
     return render_template('create-study-group.html')
 
 @app.route('/create-study-group', methods=['POST'])
+@login_required
 def create_new_studygroup():
     name = request.form.get('name')
     description = request.form.get('description')
@@ -88,15 +145,18 @@ if __name__ == "__main__":
      app.run()
 
 @app.route('/study-groups/all')
+@login_required
 def ViewStudygroups():
      studygroups_list = load_studygroups_from_db()
      return render_template('study-groups-view.html', studygroups=studygroups_list)
 
 @app.route('/post-a-question', methods=['GET'])
+@login_required
 def show_post_a_question():
     return render_template('post-a-question.html')
 
 @app.route('/post-a-question', methods=['POST'])
+@login_required
 def post_a_question():
     title = request.form.get('title')
     category = request.form.get('category')
@@ -106,48 +166,8 @@ def post_a_question():
     #     return redirect(url_for('ViewQuestions'))
     return "Successfully posted your question!", 200
 
-# @app.route('/summarize-content', methods=['GET', 'POST'])
-# def summarization_form():
-#     if request.method == 'GET':
-#         return render_template('summarization-form.html')  # Show the form
-
-#     if 'upload' not in request.files:
-#         return jsonify({'error': 'No file uploaded'}), 400
-
-#     upload = request.files['upload']
-
-#     if upload.filename == '':
-#         return jsonify({'error': 'No selected file'}), 400
-
-#     # Ensure the uploads directory exists
-#     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
-
-#     file_path = os.path.join(app.config["UPLOAD_FOLDER"], upload.filename)
-#     upload.save(file_path)
-
-#     # Extract text from the uploaded file (assuming extract_text is defined)
-#     text = extract_text(file_path)
-
-#     if not text:
-#         return jsonify({'error': 'Unable to extract text from the file'}), 400
-    
-#     print(request.form)
-
-#      # Get the custom instruction (description) from the form
-#     description = request.form.get('description')
-    
-#     print(f"Description: {description}") 
-
-#     if not description:
-#         return jsonify({'error': 'No description provided'}), 400
-
-#     # Summarize the extracted text with the custom description
-#     summary = summarize_text(text, description)
-
-#     # return render_template('summarization-form.html', summary=summary)
-#     return jsonify({'summary': summary})
-
 @app.route('/summarize-content', methods=['GET', 'POST'])
+@login_required
 def summarization_form():
     if request.method == 'POST':
         # Debugging the form data and file
@@ -181,19 +201,22 @@ def summarization_form():
 
 
 @app.route('/generate-insights')
+@login_required
 def insights_form():
     return render_template('insights.html')
 
 @app.route('/schedule-session')
+@login_required
 def schedule_session():
     return render_template('schedule-session.html')
 
 @app.route('/profile')
+@login_required
 def profile():
-    user = {'username': 'Miguel'}
     return render_template('profile.html, user=user')
 
 @app.route('/browse-forum/all')
+@login_required
 def ViewQuestions():
     questions_list = load_questions_from_db()
     return render_template('browse-forum.html', questions=questions_list)

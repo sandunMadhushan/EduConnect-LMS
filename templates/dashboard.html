@@ -36,8 +36,9 @@
       <!-- Main Content -->
       <main class="main-content">
         <header class="header">
-          <h1>Welcome, [User Name]!</h1>
+          <h1>Welcome, {{ user.name }}!</h1>
           <p>Your personalized learning dashboard.</p>
+          <a href="{{ url_for('logout') }}">Logout</a>
         </header>
         <section class="widgets">
           <div class="widget">
