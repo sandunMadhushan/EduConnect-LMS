@@ -61,25 +61,119 @@ EduConnect-LMS is a collaborative learning management system designed to facilit
 
 ## 🚀 Installation
 
+### Prerequisites
+- Python 3.8 or higher
+- pip (Python package installer)
+- Git
+
+### Step-by-Step Installation
+
 1. Clone the repository:
-    ```bash
-    git clone https://github.com/sandunMadhushan/EduConnect-LMS.git
-    ```
+```bash
+git clone https://github.com/sandunMadhushan/EduConnect-LMS.git
+```
 
 2. Navigate to the project directory:
-    ```bash
-    cd EduConnect-LMS
-    ```
+```bash
+cd EduConnect-LMS
+```
 
-3. Install dependencies (assuming you have Python installed):
-    ```bash
-    pip install -r requirements.txt
-    ```
+3. Create and activate a virtual environment:
+**For Windows:**
+```bash
+# Create virtual environment
+python -m venv virt
+# Activate virtual environment
+source virt/Scripts/activate
+```
 
-4. Run the application:
-    ```bash
-    flask run
-    ```
+**For macOS/Linux:**
+```bash
+# Create virtual environment
+python -m venv virt
+# Activate virtual environment
+source virt/bin/activate
+```
+
+4. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+5. Set up environment variables:
+```bash
+# Create .env file
+touch .env
+```
+
+Add the following required environment variables to your `.env` file:
+```bash
+# Database Configuration
+DB_USER=your_database_username
+DB_PASSWORD=your_database_password
+DB_NAME=your_database_name
+DB_HOST=your_database_host
+
+# OpenAI API Configuration
+OPENAI_API_KEY=your_openai_api_key
+
+# Application Configuration
+UPLOAD_FOLDER=path_to_upload_folder
+SECRET_KEY=your_secret_key
+```
+
+Environment Variables Description:
+- `DB_USER`: Database username for authentication
+- `DB_PASSWORD`: Database password for authentication
+- `DB_NAME`: Name of the database to be used
+- `DB_HOST`: Database host address
+- `OPENAI_API_KEY`: API key for OpenAI services
+- `UPLOAD_FOLDER`: Path where uploaded files will be stored
+- `SECRET_KEY`: Secret key for Flask application security
+
+6. Run the application:
+```bash
+flask run
+```
+
+The application should now be running at `http://localhost:5000`
+
+### Deactivating the Virtual Environment
+When you're done working on the project, you can deactivate the virtual environment:
+```bash
+deactivate
+```
+
+### Troubleshooting
+If you encounter any issues during installation:
+1. Make sure you have the correct Python version installed
+2. Ensure all prerequisites are met
+3. Check if the virtual environment is activated (you should see `(virt)` in your terminal)
+4. Verify that all environment variables are properly set in the `.env` file
+5. Try removing the virtual environment and starting fresh:
+   ```bash
+   # Windows
+   rmdir /s /q virt
+   
+   # macOS/Linux
+   rm -rf virt
+   ```
+
+### Troubleshooting
+
+If you encounter any issues during installation:
+
+1. Make sure you have the correct Python version installed
+2. Ensure all prerequisites are met
+3. Check if the virtual environment is activated (you should see `(virt)` in your terminal)
+4. Try removing the virtual environment and starting fresh:
+   ```bash
+   # Windows
+   rmdir /s /q virt
+   
+   # macOS/Linux
+   rm -rf virt
+   ```
 
 ## 🔄 Development Status
 
