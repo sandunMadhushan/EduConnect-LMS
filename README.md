@@ -59,6 +59,12 @@ EduConnect-LMS is a collaborative learning management system designed to facilit
 ### ⚙️ Backend
 - Flask (Python web framework)
 
+### 🔌 API Services
+- OpenAI API for AI-powered content summarization
+- RESTful API architecture for service integration
+- API endpoints for user management, study groups, and content delivery
+- Secure API authentication and authorization
+
 ## 🚀 Installation
 
 ### Prerequisites
