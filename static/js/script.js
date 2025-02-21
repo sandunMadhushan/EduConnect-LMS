@@ -7,3 +7,14 @@ function adjustHeight(event) {
     textarea.style.height = "auto";
     textarea.style.height = textarea.scrollHeight + "px";
 }
+
+
+const alerts = document.querySelectorAll('.alert');
+
+
+alerts.forEach(alert => {
+  setTimeout(() => {
+    alert.style.opacity = '0';  
+    setTimeout(() => alert.remove(), 500); 
+  }, 3000);  
+});

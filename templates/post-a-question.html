@@ -19,12 +19,15 @@
           <li><a href="{{ url_for('aitools') }}">AI Tools</a></li>
           <li><a href="{{ url_for('studysessions') }}">Study Sessions</a></li>
           <li><a href="{{ url_for('profile') }}">Profile</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
         </ul>
       </aside>
       <main class="main-content">
         <header class="header">
-          <h1>Post a Question</h1>
-          <p>Create a new discussion thread and engage with others.</p>
+          <div class="header-text">
+            <h1>Post a Question</h1>
+            <p>Create a new discussion thread and engage with others.</p>
+          </div>
         </header>
         <section class="content">
           <div class="widget post-question-widget">

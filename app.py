@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
 from sqlalchemy import text
-from database import get_studygroups, create_studygroup, db_post_a_question, get_all_questions,  register_user, login_user, get_user_by_id
+from database import get_studygroups, create_studygroup, db_post_a_question, get_all_questions,  register_user, login_user, get_user_by_id, update_user, update_user_profile_pic,update_user_profile
 import openai
 # from openai import OpenAI
 import os
@@ -82,9 +82,9 @@ def signup():
     
     if password != confirm_password:
         flash('Passwords do not match', 'error')
-        return redirect(url_for('hello'))
+        return redirect(url_for('index'))
     
-    user_id = register_user(name, email, None, password)  # Address is optional
+    user_id = register_user(name, email, password)
     if user_id:
         session['user_id'] = user_id
         session['user_name'] = name
@@ -93,6 +93,7 @@ def signup():
     else:
         flash('Registration failed. Email might already be registered.', 'error')
         return redirect(url_for('index'))
+
 @app.route('/logout')
 def logout():
     session.clear()
@@ -210,10 +211,6 @@ def insights_form():
 def schedule_session():
     return render_template('schedule-session.html')
 
-@app.route('/profile')
-@login_required
-def profile():
-    return render_template('profile.html, user=user')
 
 @app.route('/browse-forum/all')
 @login_required
@@ -276,3 +273,68 @@ def page_not_found(e):
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template('500.html'), 500 
+
+
+UPLOAD_FOLDER = 'static/uploads/profile_pics'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Helper function to check allowed file extensions
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    # Get current user
+    user = get_user_by_id(session['user_id'])
+    
+    if request.method == 'POST':
+        # Handle profile update
+        name = request.form.get('name')
+        bio = request.form.get('bio')
+        
+        # Update user info in database
+        if update_user_profile(session['user_id'], name=name, bio=bio):
+            flash('Profile updated successfully!', 'success')
+        else:
+            flash('Error updating profile', 'error')
+        
+        return redirect(url_for('profile'))
+    
+    return render_template('profile.html', user=user)
+
+@app.route('/upload_profile_pic', methods=['POST'])
+@login_required
+def upload_profile_pic():
+    if 'profile-pic' not in request.files:
+        flash('No file part', 'error')
+        return redirect(url_for('profile'))
+    
+    file = request.files['profile-pic']
+    
+    if file.filename == '':
+        flash('No selected file', 'error')
+        return redirect(url_for('profile'))
+    
+    if file and allowed_file(file.filename):
+        # Create upload folder if it doesn't exist
+        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+        
+        # Secure the filename and make it unique
+        filename = secure_filename(f"user_{session['user_id']}_{file.filename}")
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        
+        # Save the file
+        file.save(filepath)
+        
+        # Update user's profile picture in database
+        if update_user_profile_pic(session['user_id'], f'/static/uploads/profile_pics/{filename}'):
+            flash('Profile picture updated successfully!', 'success')
+        else:
+            flash('Error updating profile picture', 'error')
+    else:
+        flash('Invalid file type', 'error')
+    
+    return redirect(url_for('profile'))

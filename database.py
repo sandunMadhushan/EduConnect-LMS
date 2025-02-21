@@ -83,7 +83,7 @@ def get_all_questions():
         print(f"Error: {e}")
         return []
         
-def register_user(name, email, address, password):
+def register_user(name, email, password):
     """
     Register a new user with hashed password
     Returns: User ID if successful, None if failed
@@ -91,30 +91,33 @@ def register_user(name, email, address, password):
     if not conn:
         return None
     try:
+        # Check if email already exists
+        with conn.cursor() as cursor:
+            check_sql = "SELECT id FROM users WHERE email = %s"
+            cursor.execute(check_sql, (email,))
+            if cursor.fetchone():
+                print("Email already exists")  # Debug line
+                return None  # If the email exists, return None
+
         # Hash the password
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-        
+
         with conn.cursor() as cursor:
             sql = """
-                INSERT INTO users (name, email, address, password, joined_date) 
-                VALUES (%s, %s, %s, %s, %s)
+                INSERT INTO users (name, email, password, joined_date) 
+                VALUES (%s, %s, %s, %s)
             """
             cursor.execute(sql, (
                 name,
                 email,
-                address,
                 hashed_password,
                 datetime.now().date()
             ))
             conn.commit()
-            return cursor.lastrowid
-    except pymysql.err.IntegrityError as e:
-        if "Duplicate entry" in str(e):
-            print("Email already exists")
-        return None
+            return cursor.lastrowid  # Return the user ID
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Registration error: {e}")  # More detailed error logging
         return None
 
 def login_user(email, password):
@@ -129,21 +132,30 @@ def login_user(email, password):
             sql = "SELECT * FROM users WHERE email = %s"
             cursor.execute(sql, (email,))
             user = cursor.fetchone()
-            
+
             if user:
                 # Verify password
-                stored_password = user[4]  # Assuming password is the 5th column
-                if bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8')):
+                stored_password = user[3] 
+                if isinstance(stored_password, str):
+                    stored_password = stored_password.encode('utf-8')
+
+                if bcrypt.checkpw(password.encode('utf-8'), stored_password):
                     return {
                         'id': user[0],
                         'name': user[1],
                         'email': user[2],
-                        'address': user[3],
-                        'joined_date': user[5]
+                        'joined_date': user[4],
+                        'bio': user[5],           
+                    'profile_pic': user[6]  
                     }
+                else:
+                    print("Password verification failed")  # Debugging password mismatch
+            else:
+                print("User not found")  # User not found in the database
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Login error: {e}")
     return None
+
 
 def get_user_by_id(user_id):
     """
@@ -154,7 +166,7 @@ def get_user_by_id(user_id):
         return None
     try:
         with conn.cursor() as cursor:
-            sql = "SELECT id, name, email, address, joined_date FROM users WHERE id = %s"
+            sql = "SELECT id, name, email, password, joined_date, bio, profile_pic FROM users WHERE id = %s"
             cursor.execute(sql, (user_id,))
             user = cursor.fetchone()
             if user:
@@ -162,14 +174,18 @@ def get_user_by_id(user_id):
                     'id': user[0],
                     'name': user[1],
                     'email': user[2],
-                    'address': user[3],
-                    'joined_date': user[4]
+                    'password': user[3],
+                    'joined_date': user[4],
+                    'bio': user[5],           
+                    'profile_pic': user[6]    
                 }
+            else:
+                print("No user found with that ID.")
     except Exception as e:
         print(f"Error: {e}")
     return None
 
-def update_user(user_id, name=None, email=None, address=None):
+def update_user(user_id, name=None, email=None):
     """
     Update user information
     Returns: True if successful, False if failed
@@ -186,9 +202,6 @@ def update_user(user_id, name=None, email=None, address=None):
             if email:
                 updates.append("email = %s")
                 values.append(email)
-            if address:
-                updates.append("address = %s")
-                values.append(address)
                 
             if not updates:
                 return False
@@ -201,7 +214,55 @@ def update_user(user_id, name=None, email=None, address=None):
     except Exception as e:
         print(f"Error: {e}")
         return False
-    
+
+def update_user_profile_pic(user_id, profile_pic_path):
+    """
+    Update user's profile picture path in database
+    """
+    if not conn:
+        return False
+    try:
+        with conn.cursor() as cursor:
+            sql = "UPDATE users SET profile_pic = %s WHERE id = %s"
+            cursor.execute(sql, (profile_pic_path, user_id))
+            conn.commit()
+            return True
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
+
+def update_user_profile(user_id, name=None, email=None, bio=None):
+    """
+    Update user information
+    """
+    if not conn:
+        return False
+    try:
+        with conn.cursor() as cursor:
+            updates = []
+            values = []
+            if name:
+                updates.append("name = %s")
+                values.append(name)
+            if email:
+                updates.append("email = %s")
+                values.append(email)
+            if bio:
+                updates.append("bio = %s")
+                values.append(bio)
+                
+            if not updates:
+                return False
+                
+            values.append(user_id)
+            sql = f"UPDATE users SET {', '.join(updates)} WHERE id = %s"
+            cursor.execute(sql, tuple(values))
+            conn.commit()
+            return True
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
+
 def close_connection():
     if conn:
         conn.close()
