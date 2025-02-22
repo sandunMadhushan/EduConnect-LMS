@@ -4,6 +4,7 @@ from sqlalchemy import create_engine, text
 import os
 import bcrypt  # for password hashing
 from datetime import datetime
+from azure.communication.email import EmailClient
 
 # Load environment variables
 load_dotenv()
@@ -266,3 +267,64 @@ def update_user_profile(user_id, name=None, email=None, bio=None):
 def close_connection():
     if conn:
         conn.close()
+        
+# Azure Email
+connection_string = os.getenv('CONNECTION_STRING')
+sender_address = os.getenv('SENDER_ADDRESS')
+
+def check_email_exists(email):
+    if not conn:
+        return None
+    try:
+        with conn.cursor() as cursor:
+            sql = "SELECT id FROM users WHERE email = %s"
+            cursor.execute(sql, (email))
+            result = cursor.fetchone()
+            return result is not None
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+    
+def send_welcome_email_sync(user_email, name):
+    """Synchronous version of send_welcome_email"""
+    connection_string = os.getenv('CONNECTION_STRING')
+    sender_address = os.getenv('SENDER_ADDRESS')
+    
+    try:
+        email_client = EmailClient.from_connection_string(connection_string)
+        
+        message = {
+            "senderAddress": sender_address,
+            "content": {
+                "subject": "Welcome to Our EduConnect!",
+                "plainText": f"Hi {name},\n\nWelcome to our EduConnect! Thank you for registering.\n\nBest regards,\nThe Team",
+                "html": f"""
+                    <html>
+                        <body>
+                            <h1>Welcome to EduConnect!</h1>
+                            <p>Hi {name},</p>
+                            <p>Welcome to EduConnect! Thank you for registering.</p>
+                            <br>
+                            <p>Best regards,</p>
+                            <p>The Team</p>
+                            <hr>
+                            <a href="https://educonnect-lms.onrender.com/">Visit EduConnect</a>
+                            <p><img src="https://educonnect-lms.onrender.com/static/images/logo.png" alt="EduConnect Logo" style="width:200px"></p>
+                            
+                        </body>
+                    </html>
+                """
+            },
+            "recipients": {
+                "to": [{"address": user_email, "displayName": name}]
+            }
+        }
+        
+        # Use sync version of send
+        poller = email_client.begin_send(message)
+        result = poller.result()
+        return True
+        
+    except Exception as e:
+        print(f"Error sending email: {e}")
+        return False

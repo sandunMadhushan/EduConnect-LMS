@@ -436,12 +436,21 @@ a {
   max-width: 400px;
   margin-left: auto;
   margin-right: auto;
-  position: fixed;  /* Position fixed at the top */
-  top: 10px;        /* 10px from the top */
-  left: 50%;        /* Center horizontally */
-  transform: translateX(-50%);  /* Adjust for exact centering */
-  z-index: 9999;    /* Ensure the alert is on top */
+  position: fixed;  
+  top: 10px;        
+  left: 50%;        
+  transform: translateX(-50%);  
+  z-index: 9999;    
+  opacity: 1;
+  animation: fadeOut 10s ease-in-out forwards;
 }
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 
 .alert-error {
   background-color: #fee2e2;
