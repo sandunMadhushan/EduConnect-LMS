@@ -305,14 +305,9 @@ def send_welcome_email_sync(user_email, name):
                             <p>Hi {name},</p>
                             <p>Welcome to EduConnect! Thank you for registering.</p>
                             <br>
-                            <a href="https://educonnect-lms.onrender.com/" 
-                            style="color: #ffffff; background-image: linear-gradient(145deg, #1d3557, #457b9d); 
-                                    padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; 
-                                    font-size: 16px; display: inline-block; text-align: center; 
-                                    transition: background-image 0.3s ease-in-out;">
+                            <a href="https://educonnect-lms.onrender.com/" style="color: #ffffff; background: #1d3557; background-image: linear-gradient(145deg, #1d3557, #457b9d); padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; font-size: 16px; display: inline-block; text-align: center;">
                             Visit EduConnect
                             </a>
-
                             <br>
                             <br>
                             <p>Best regards,</p>
