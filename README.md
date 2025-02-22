@@ -6,7 +6,7 @@
 
 [![Live Demo](https://img.shields.io/badge/✨_Live_Demo-Click_Here-2ea44f?style=for-the-badge)](https://educonnect-lms.onrender.com/)
 
-> **⚠️ Note:** The site’s initial load may take up to **50 seconds**. ⏳
+> **⚠️ Note:** The site may take up to **50 seconds** if inactive
 
 </div>
 
