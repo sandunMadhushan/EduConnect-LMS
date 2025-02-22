@@ -64,6 +64,7 @@ EduConnect-LMS is a collaborative learning management system designed to facilit
 - RESTful API architecture for service integration
 - API endpoints for user management, study groups, and content delivery
 - Secure API authentication and authorization
+- Microsoft Azure Communication Services for email notifications
 
 ## 🚀 Installation
 
@@ -126,6 +127,10 @@ OPENAI_API_KEY=your_openai_api_key
 # Application Configuration
 UPLOAD_FOLDER=path_to_upload_folder
 SECRET_KEY=your_secret_key
+
+# Microsoft Azure Communication Services Configuration
+CONNECTION_STRING=your_azure_communication_services_connection_string
+SENDER_ADDRESS=your_sender_email_address
 ```
 
 Environment Variables Description:
@@ -136,6 +141,8 @@ Environment Variables Description:
 - `OPENAI_API_KEY`: API key for OpenAI services
 - `UPLOAD_FOLDER`: Path where uploaded files will be stored
 - `SECRET_KEY`: Secret key for Flask application security
+- `CONNECTION_STRING`: Connection string for Azure Communication Services
+- `SENDER_ADDRESS`: Sender email address for Azure Communication Services
 
 6. Run the application:
 ```bash
@@ -144,26 +151,15 @@ flask run
 
 The application should now be running at `http://localhost:5000`
 
+### Email Sending on Registration
+
+To enable email sending when a user registers, ensure you have the Azure Communication Services set up. The application will use the connection string and sender email specified in the .env file to send registration confirmation emails.
+
 ### Deactivating the Virtual Environment
 When you're done working on the project, you can deactivate the virtual environment:
 ```bash
 deactivate
 ```
-
-### Troubleshooting
-If you encounter any issues during installation:
-1. Make sure you have the correct Python version installed
-2. Ensure all prerequisites are met
-3. Check if the virtual environment is activated (you should see `(virt)` in your terminal)
-4. Verify that all environment variables are properly set in the `.env` file
-5. Try removing the virtual environment and starting fresh:
-   ```bash
-   # Windows
-   rmdir /s /q virt
-   
-   # macOS/Linux
-   rm -rf virt
-   ```
 
 ### Troubleshooting
 
