@@ -296,8 +296,8 @@ def send_welcome_email_sync(user_email, name):
         message = {
             "senderAddress": sender_address,
             "content": {
-                "subject": "Welcome to Our EduConnect!",
-                "plainText": f"Hi {name},\n\nWelcome to our EduConnect! Thank you for registering.\n\nBest regards,\nThe Team",
+                "subject": "Welcome to EduConnect!",
+                "plainText": f"Hi {name},\n\nWelcome to EduConnect! Thank you for registering.\n\nBest regards,\nThe Team",
                 "html": f"""
                     <html>
                         <body>
@@ -305,12 +305,21 @@ def send_welcome_email_sync(user_email, name):
                             <p>Hi {name},</p>
                             <p>Welcome to EduConnect! Thank you for registering.</p>
                             <br>
+                            <a href="https://educonnect-lms.onrender.com/" 
+                            style="color: #ffffff; background-image: linear-gradient(145deg, #1d3557, #457b9d); 
+                                    padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; 
+                                    font-size: 16px; display: inline-block; text-align: center; 
+                                    transition: background-image 0.3s ease-in-out;">
+                            Visit EduConnect
+                            </a>
+
+                            <br>
+                            <br>
                             <p>Best regards,</p>
                             <p>The Team</p>
                             <hr>
-                            <a href="https://educonnect-lms.onrender.com/">Visit EduConnect</a>
-                            <p><img src="https://educonnect-lms.onrender.com/static/images/logo.png" alt="EduConnect Logo" style="width:200px"></p>
-                            
+                            <p><img src="https://i.imgur.com/8yUWDDq.png" alt="EduConnect Logo" style="width:200px"></p>
+                            <p style="font-size: 12px; color: #777;">This is an automated email. Please do not reply.</p>
                         </body>
                     </html>
                 """
