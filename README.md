@@ -6,6 +6,8 @@
 
 [![Live Demo](https://img.shields.io/badge/✨_Live_Demo-Click_Here-2ea44f?style=for-the-badge)](https://educonnect-lms.onrender.com/)
 
+> **⚠️ Note:** The site’s initial load may take up to **50 seconds**. ⏳
+
 </div>
 
 EduConnect-LMS is a collaborative learning management system designed to facilitate interaction between students, demonstrators, lecturers, and study groups. The platform integrates AI-powered tools to enhance the learning experience while providing a robust environment for academic collaboration.
