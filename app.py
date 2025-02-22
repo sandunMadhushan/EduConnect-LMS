@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
 from sqlalchemy import text
-from database import get_studygroups, create_studygroup, db_post_a_question, get_all_questions,  register_user, login_user, get_user_by_id, update_user, update_user_profile_pic,update_user_profile
+from database import get_studygroups, create_studygroup, db_post_a_question, get_all_questions,  register_user, login_user, get_user_by_id, update_user, update_user_profile_pic,update_user_profile, check_email_exists, send_welcome_email_sync
 import openai
 # from openai import OpenAI
 import os
@@ -11,6 +11,12 @@ from docx import Document
 import time
 from openai.error import RateLimitError
 from functools import wraps
+
+from azure.communication.email import EmailClient
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+
+email_executor = ThreadPoolExecutor(max_workers=3)
 
 # Load environment variables
 load_dotenv()
@@ -84,11 +90,24 @@ def signup():
         flash('Passwords do not match', 'error')
         return redirect(url_for('index'))
     
+        # Check if email exists before registration
+    if check_email_exists(email):
+        flash('Email already registered', 'error')
+        return redirect(url_for('index'))
+    
     user_id = register_user(name, email, password)
     if user_id:
         session['user_id'] = user_id
         session['user_name'] = name
         session['user_email'] = email
+        def send_email_task():
+            email_sent = send_welcome_email_sync(email, name)
+            if not email_sent:
+                print("Failed to send welcome email")
+            
+        email_executor.submit(send_email_task)
+        
+        flash('Registration successful! A welcome email has been sent to your inbox. Please check your spam folder if you don’t see it.', 'success')
         return redirect(url_for('dashboard'))
     else:
         flash('Registration failed. Email might already be registered.', 'error')
