@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
 from sqlalchemy import text
-from database import get_studygroups, create_studygroup, db_post_a_question, get_all_questions,  register_user, login_user, get_user_by_id, update_user, update_user_profile_pic,update_user_profile, check_email_exists, send_welcome_email_sync
+from database import get_studygroups, create_studygroup, db_post_a_question, get_all_questions,  register_user, login_user, get_user_by_id, update_user, update_user_profile_pic,update_user_profile, check_email_exists, send_welcome_email_sync, save_reset_token, verify_reset_token, update_password_with_token, get_user_by_email
 import openai
 # from openai import OpenAI
 import os
@@ -15,6 +15,9 @@ from functools import wraps
 from azure.communication.email import EmailClient
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+
+import secrets
+from datetime import datetime, timedelta
 
 email_executor = ThreadPoolExecutor(max_workers=3)
 
@@ -357,3 +360,122 @@ def upload_profile_pic():
         flash('Invalid file type', 'error')
     
     return redirect(url_for('profile'))
+
+
+@app.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
+    if request.method == "POST":
+        email = request.form.get("email")
+        
+        # Check if email exists
+        if not check_email_exists(email):
+            flash("Email address not found.", "error")
+            return redirect(url_for("forgot_password"))
+        
+        # Get user's name
+        user = get_user_by_email(email)
+        if not user:
+            flash("An error occurred.", "error")
+            return redirect(url_for("forgot_password"))
+        
+        # Generate reset token and save to database
+        token = secrets.token_urlsafe(32)
+        expiry = datetime.utcnow() + timedelta(hours=24)
+        
+        if save_reset_token(email, token, expiry):
+            # Send reset email using Azure
+            if send_password_reset_email(email, user['name'], token):
+                flash("Password reset link sent to your email.", "success")
+                return redirect(url_for("index"))
+            else:
+                flash("Error sending email. Please try again later.", "error")
+                return redirect(url_for("forgot_password"))
+        
+        flash("An error occurred. Please try again later.", "error")
+        return redirect(url_for("forgot_password"))
+    
+    return render_template("index.html")
+
+@app.route("/reset-password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    if request.method == "POST":
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirm-password")
+        
+        if password != confirm_password:
+            flash("Passwords do not match.", "error")
+            return redirect(url_for("reset_password", token=token))
+        
+        if update_password_with_token(token, password):
+            flash("Your password has been updated.", "success")
+            return redirect(url_for("index"))
+        
+        flash("Invalid or expired reset link.", "error")
+        return redirect(url_for("index"))
+    
+    # Verify token is valid on GET request
+    if verify_reset_token(token):
+        return render_template("index.html", reset_token=token)
+    
+    flash("Invalid or expired reset link.", "error")
+    return redirect(url_for("index"))
+
+def send_password_reset_email(user_email, name, reset_token):
+    """Send password reset email using Azure Email Communication Service"""
+    try:
+        connection_string = os.getenv('CONNECTION_STRING')
+        sender_address = os.getenv('SENDER_ADDRESS')
+        email_client = EmailClient.from_connection_string(connection_string)
+        
+        reset_link = f"https://educonnect-lms.onrender.com/reset-password/{reset_token}"
+        
+        message = {
+            "senderAddress": sender_address,
+            "content": {
+                "subject": "EduConnect Password Reset Request",
+                "plainText": f"""
+                Hi {name},
+
+                You recently requested to reset your password for your EduConnect account. Click the link below to reset it:
+
+                {reset_link}
+
+                This password reset link is only valid for 24 hours. If you did not request a password reset, please ignore this email.
+
+                Best regards,
+                The EduConnect Team
+                """,
+                "html": f"""
+                    <html>
+                        <body>
+                            <h1>Password Reset Request</h1>
+                            <p>Hi {name},</p>
+                            <p>You recently requested to reset your password for your EduConnect account. Click the button below to reset it:</p>
+                            <br>
+                            <a href="{reset_link}" style="color: #ffffff; background: #1d3557; background-image: linear-gradient(145deg, #1d3557, #457b9d); padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; font-size: 16px; display: inline-block; text-align: center;">
+                                Reset Your Password
+                            </a>
+                            <br>
+                            <p style="color: #666; font-size: 14px;">This password reset link is only valid for 24 hours. If you did not request a password reset, please ignore this email.</p>
+                            <br>
+                            <p>Best regards,</p>
+                            <p>The EduConnect Team</p>
+                            <hr>
+                            <p><img src="https://i.imgur.com/8yUWDDq.png" alt="EduConnect Logo" style="width:200px"></p>
+                            <p style="font-size: 12px; color: #777;">This is an automated email. Please do not reply.</p>
+                        </body>
+                    </html>
+                """
+            },
+            "recipients": {
+                "to": [{"address": user_email, "displayName": name}]
+            }
+        }
+        
+        poller = email_client.begin_send(message)
+        result = poller.result()
+        return True
+        
+    except Exception as e:
+        print(f"Error sending password reset email: {e}")
+        return False
