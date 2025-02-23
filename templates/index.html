@@ -263,6 +263,12 @@
       console.log("Forms wrapper classes:", formsWrapper.classList);
       console.log("Login toggle display:", window.getComputedStyle(loginToggle).display);
       console.log("Signup toggle display:", window.getComputedStyle(signupToggle).display);
+
+      // Debugging: Hide toggle buttons with JavaScript
+      if (showResetForm) {
+        loginToggle.style.display = "none !important";
+        signupToggle.style.display = "none !important";
+      }      
     </script>
   </body>
 </html>
