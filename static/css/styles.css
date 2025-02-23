@@ -291,6 +291,10 @@ a {
   display: none;
 }
 
+/* Hide toggle buttons in reset password mode */
+.forms-wrapper.reset-password-mode .toggle-buttons {
+  display: none;
+}
 /* Form Elements */
 .auth-form h1 {
   margin: 0 0 25px;
