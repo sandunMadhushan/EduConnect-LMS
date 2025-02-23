@@ -292,7 +292,7 @@ a {
 }
 
 /* Hide toggle buttons in reset password mode */
-.forms-wrapper.reset-password-mode .toggle-buttons {
+.forms-wrapper.reset-password-mode .toggle-buttons #login-toggle, #signup-toggle {
   display: none;
 }
 /* Form Elements */
