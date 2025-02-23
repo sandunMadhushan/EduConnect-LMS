@@ -180,7 +180,7 @@
 
       // Toggle between login and signup
       loginToggle.addEventListener("click", () => {
-        formsWrapper.classList.remove("sign-up-mode");
+        formsWrapper.classList.remove("sign-up-mode", "reset-password-mode", "forgot-password-mode",);
         formsWrapper.classList.remove("forgot-password-mode");
         loginToggle.classList.add("active");
         signupToggle.classList.remove("active");
@@ -188,7 +188,7 @@
 
       signupToggle.addEventListener("click", () => {
         formsWrapper.classList.add("sign-up-mode");
-        formsWrapper.classList.remove("forgot-password-mode");
+        formsWrapper.classList.remove("forgot-password-mode", "reset-password-mode");
         signupToggle.classList.add("active");
         loginToggle.classList.remove("active");
       });
@@ -196,12 +196,12 @@
       // Toggle forgot password form
       forgotPasswordBtn.addEventListener("click", () => {
         formsWrapper.classList.add("forgot-password-mode");
-        formsWrapper.classList.remove("sign-up-mode");
+        formsWrapper.classList.remove("sign-up-mode", "reset-password-mode");
       });
 
       // Back to login from forgot password
       backToLoginBtn.addEventListener("click", () => {
-        formsWrapper.classList.remove("forgot-password-mode");
+        formsWrapper.classList.remove("forgot-password-mode", "reset-password-mode");
         loginToggle.classList.add("active");
         signupToggle.classList.remove("active");
       });
@@ -254,8 +254,8 @@
       const showResetForm = urlParams.has("reset_token") || "{{ show_reset_form }}" === "True";
 
       if (showResetForm) {
-        formsWrapper.classList.add("forgot-password-mode");
-        formsWrapper.classList.remove("sign-up-mode");
+        formsWrapper.classList.add("reset-password-mode");
+        formsWrapper.classList.remove("sign-up-mode", "forgot-password-mode");
         loginToggle.classList.remove("active");
         signupToggle.classList.remove("active");
       }
