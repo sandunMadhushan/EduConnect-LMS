@@ -38,7 +38,7 @@
         <!-- Forms Container -->
         <div class="forms-wrapper">
           <!-- Login Form -->
-          <form id="login-form" class="auth-form active-form" action="/login" method="post">
+          <form id="login-form" class="auth-form {% if not show_reset_form %}active-form{% endif %}" action="/login" method="post">
             <h1>Login</h1>
             <div class="form-group">
               <label for="login-email">Email Address</label>
@@ -67,7 +67,7 @@
           </form>
 
           <!-- Signup Form -->
-          <form id="signup-form" class="auth-form" action="/signup" method="post">
+          <form id="signup-form" class="auth-form" {% if not show_reset_form %}active-form{% endif %} action="/signup" method="post">
             <h1>Sign Up</h1>
             <div class="form-group">
               <label for="signup-name">Full Name</label>
@@ -115,7 +115,7 @@
           </form>
 
           <!-- Reset Password Request Form -->
-          <form id="forgot-password-form" class="auth-form" action="/forgot-password" method="post">
+          <form id="forgot-password-form" class="auth-form" {% if not show_reset_form %}active-form{% endif %} action="/forgot-password" method="post">
             <h1>Reset Password</h1>
             <div class="form-group">
               <label for="forgot-email">Email Address</label>
@@ -136,7 +136,7 @@
           </form>
 
           <!-- Reset Password Form (shown after clicking email link) -->
-          <form id="reset-password-form" class="auth-form" action="/reset-password/{{ reset_token }}" method="post">
+          <form id="reset-password-form" class="auth-form {% if not show_reset_form %}active-form{% endif %}" action="/reset-password/{{ reset_token }}" method="post">
             <h1>Set New Password</h1>
             <div class="form-group">
               <label for="new-password">New Password</label>
@@ -248,6 +248,18 @@
           forgotPasswordForm.submit();
         }, 4000);
       });
+
+      // Check if the reset password form should be shown
+      const urlParams = new URLSearchParams(window.location.search);
+      const showResetForm = urlParams.has("reset_token") || "{{ show_reset_form }}" === "True";
+
+      if (showResetForm) {
+        formsWrapper.classList.add("forgot-password-mode");
+        formsWrapper.classList.remove("sign-up-mode");
+        loginToggle.classList.remove("active");
+        signupToggle.classList.remove("active");
+      }
+
     </script>
   </body>
 </html>
