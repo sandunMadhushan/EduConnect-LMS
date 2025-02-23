@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
 from sqlalchemy import text
-from database import get_studygroups, create_studygroup, db_post_a_question, get_all_questions,  register_user, login_user, get_user_by_id, update_user, update_user_profile_pic,update_user_profile, check_email_exists, send_welcome_email_sync, save_reset_token, verify_reset_token, update_password_with_token, get_user_by_email
+from database import get_studygroups, create_studygroup, db_post_a_question, get_all_questions,  register_user, login_user, get_user_by_id, update_user, update_user_profile_pic,update_user_profile, check_email_exists, send_welcome_email_sync, save_reset_token, verify_reset_token, update_password_with_token, get_user_by_email, update_user_password
 import openai
 # from openai import OpenAI
 import os
@@ -479,3 +479,40 @@ def send_password_reset_email(user_email, name, reset_token):
     except Exception as e:
         print(f"Error sending password reset email: {e}")
         return False
+
+# Update password in profile page  
+@app.route('/update_password', methods=['POST'])
+@login_required 
+def update_password():
+    current_password = request.form.get('current_password')
+    new_password = request.form.get('new_password')
+    confirm_password = request.form.get('confirm_password')
+    
+    if not all([current_password, new_password, confirm_password]):
+        flash('All password fields are required', 'error')
+        return redirect(url_for('profile'))
+    
+    if current_password == new_password:
+        flash('New password cannot be the same as your current password', 'error')
+        return redirect(url_for('profile'))
+    
+    if new_password != confirm_password:
+        flash('New passwords do not match', 'error')
+        return redirect(url_for('profile'))
+    
+    if len(new_password) < 8:
+        flash('New password must be at least 8 characters long', 'error')
+        return redirect(url_for('profile'))
+    
+    success, message = update_user_password(
+        session['user_id'],  
+        current_password,
+        new_password
+    )
+    
+    if success:
+        flash(message, 'success')
+    else:
+        flash(message, 'error')
+    
+    return redirect(url_for('profile'))

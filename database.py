@@ -436,3 +436,40 @@ def get_user_by_email(email):
     except Exception as e:
         print(f"Error getting user by email: {e}")
     return None
+
+def update_user_password(user_id, current_password, new_password):
+    """
+    Update user's password after verifying current password
+    Returns: (bool, str) - (Success status, Message)
+    """
+    if not conn:
+        return False, "Database connection error"
+    try:
+        with conn.cursor() as cursor:
+            # First verify current password
+            sql = "SELECT password FROM users WHERE id = %s"
+            cursor.execute(sql, (user_id,))
+            result = cursor.fetchone()
+            
+            if not result:
+                return False, "User not found"
+            
+            stored_password = result[0]
+            if isinstance(stored_password, str):
+                stored_password = stored_password.encode('utf-8')
+                
+            # Verify current password
+            if not bcrypt.checkpw(current_password.encode('utf-8'), stored_password):
+                return False, "Current password is incorrect"
+            
+            # Hash and update new password
+            hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+            
+            sql = "UPDATE users SET password = %s WHERE id = %s"
+            cursor.execute(sql, (hashed_password, user_id))
+            conn.commit()
+            
+            return True, "Password updated successfully"
+    except Exception as e:
+        print(f"Error updating password: {e}")
+        return False, "An error occurred while updating password"
