@@ -294,7 +294,7 @@ a {
 /* Hide toggle buttons in reset password mode */
 .forms-wrapper.reset-password-mode #login-toggle,
 .forms-wrapper.reset-password-mode #signup-toggle {
-  display: none;
+  display: none !important;
 }
 /* Form Elements */
 .auth-form h1 {
