@@ -280,6 +280,17 @@ a {
   display: none;
 }
 
+/* Reset password mode */
+.forms-wrapper.reset-password-mode #reset-password-form {
+  display: block;
+}
+
+.forms-wrapper.reset-password-mode #login-form,
+.forms-wrapper.reset-password-mode #signup-form,
+.forms-wrapper.reset-password-mode #forgot-password-form {
+  display: none;
+}
+
 /* Form Elements */
 .auth-form h1 {
   margin: 0 0 25px;
