@@ -415,7 +415,7 @@ def reset_password(token):
     
     # Verify token is valid on GET request
     if verify_reset_token(token):
-        return render_template("index.html", reset_token=token)
+        return render_template("index.html", show_reset_form=True, reset_token=token)
     
     flash("Invalid or expired reset link.", "error")
     return redirect(url_for("index"))
