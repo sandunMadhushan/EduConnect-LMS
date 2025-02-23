@@ -196,13 +196,16 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  min-height: 100vh;
   width: 100%;
+  padding: 20px;
+  /* background-color: #f5f7fa; */
 }
 
 .auth-card {
   background: white;
-  width: 400px;
+  width: 100%;
+  max-width: 400px;
   border-radius: 15px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
   overflow: hidden;
@@ -212,6 +215,7 @@ a {
 /* Toggle Buttons */
 .toggle-buttons {
   display: flex;
+  border-bottom: 1px solid #eee;
 }
 
 .toggle-btn {
@@ -220,11 +224,12 @@ a {
   text-align: center;
   cursor: pointer;
   font-size: 1.1em;
-  font-weight: bold;
+  font-weight: 600;
   color: #2c3e50;
   background: #f9fafc;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: all 0.3s ease;
   border: none;
+  outline: none;
 }
 
 .toggle-btn.active {
@@ -235,6 +240,7 @@ a {
 /* Forms Wrapper */
 .forms-wrapper {
   position: relative;
+  overflow: hidden;
   display: flex;
   width: 200%; /* Adjusts to show both forms */
   height: 100%; /* Ensures consistent height for both forms */
@@ -243,13 +249,40 @@ a {
 }
 
 .auth-form {
-  width: 50%; /* Each form takes up half the container */
+  width: 50%;
+  flex-shrink: 0;
   padding: 30px;
+  display: none;
   box-sizing: border-box;
 }
 
+/* Form Display States */
+.auth-form.active-form {
+  display: block;
+}
+
+.forms-wrapper.sign-up-mode #signup-form {
+  display: block;
+  width: 100%;
+  margin: auto;
+}
+
+.forms-wrapper.sign-up-mode #login-form {
+  display: none;
+}
+
+.forms-wrapper.forgot-password-mode #forgot-password-form {
+  display: block;
+}
+
+.forms-wrapper.forgot-password-mode #login-form,
+.forms-wrapper.forgot-password-mode #signup-form {
+  display: none;
+}
+
+/* Form Elements */
 .auth-form h1 {
-  margin: 0 0 20px;
+  margin: 0 0 25px;
   font-size: 1.8em;
   color: #1d3557;
   text-align: center;
@@ -264,6 +297,7 @@ a {
   font-size: 0.9em;
   color: #6c757d;
   margin-bottom: 8px;
+  font-weight: 500;
 }
 
 .form-group input {
@@ -274,31 +308,74 @@ a {
   font-size: 1em;
   color: #495057;
   background: #f9fafc;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .form-group input:focus {
   border-color: #457b9d;
   outline: none;
+  box-shadow: 0 0 0 3px rgba(69, 123, 157, 0.1);
 }
 
+/* Buttons */
 .form-btn {
+  width: 100%;
   padding: 12px;
   background: #457b9d;
   color: white;
   font-size: 1.1em;
-  font-weight: bold;
+  font-weight: 600;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.3s ease;
-  width: 100%;
+  transition: all 0.3s ease;
 }
 
 .form-btn:hover {
   background: #1d3557;
+  transform: translateY(-1px);
 }
 
+.forgot-password-link {
+  background: none;
+  border: none;
+  color: #457b9d;
+  font-size: 0.9em;
+  padding: 0;
+  margin-top: 8px;
+  cursor: pointer;
+  display: block;
+  text-align: right;
+}
+
+.back-to-login-btn {
+  background: none;
+  border: none;
+  color: #457b9d;
+  font-size: 0.9em;
+  padding: 8px 0;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: 15px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+  .auth-card {
+    border-radius: 10px;
+  }
+  
+  .auth-form {
+    padding: 20px;
+  }
+  
+  .auth-form h1 {
+    font-size: 1.5em;
+  }
+}
 /* create study groups */
 
 .create-group label{
@@ -340,10 +417,9 @@ a {
 }
 /* Animation States */
 .forms-wrapper.sign-up-mode {
-  transform: translateX(-50%); /* Moves to show the signup form */
+  transform: translateX(0%); /* Moves to show the signup form */
+  width: 100%;
 }
-
-
 
 /* Responsive Design */
 @media (max-width: 992px) {

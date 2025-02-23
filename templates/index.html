@@ -10,6 +10,14 @@
     />
   </head>
   <body class="body">
+    <div class="spinner-container">
+      <div class="spinner-content">
+        <div class="spinner-wrapper">
+          <div class="spinner"></div>
+        </div>
+        <div class="spinner-text">Sending Rest Link...</div>
+      </div>
+    </div>
     <div class="auth-container">
       {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
@@ -30,7 +38,7 @@
         <!-- Forms Container -->
         <div class="forms-wrapper">
           <!-- Login Form -->
-          <form id="login-form" class="auth-form active-form">
+          <form id="login-form" class="auth-form active-form" action="/login" method="post">
             <h1>Login</h1>
             <div class="form-group">
               <label for="login-email">Email Address</label>
@@ -51,6 +59,7 @@
                 placeholder="Enter your password"
                 required
               />
+              <button type="button" id="forgot-password-btn" class="forgot-password-link">Forgot Password?</button>
             </div>
             <div class="form-group">
               <button type="submit" class="form-btn">Login</button>
@@ -58,7 +67,7 @@
           </form>
 
           <!-- Signup Form -->
-          <form id="signup-form" class="auth-form">
+          <form id="signup-form" class="auth-form" action="/signup" method="post">
             <h1>Sign Up</h1>
             <div class="form-group">
               <label for="signup-name">Full Name</label>
@@ -104,6 +113,55 @@
               <button type="submit" class="form-btn">Sign Up</button>
             </div>
           </form>
+
+          <!-- Reset Password Request Form -->
+          <form id="forgot-password-form" class="auth-form" action="/forgot-password" method="post">
+            <h1>Reset Password</h1>
+            <div class="form-group">
+              <label for="forgot-email">Email Address</label>
+              <input
+                type="email"
+                id="forgot-email"
+                name="email"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <button type="submit" class="form-btn">Send Reset Link</button>
+            </div>
+            <div class="form-group">
+              <button type="button" class="back-to-login-btn">Back to Login</button>
+            </div>
+          </form>
+
+          <!-- Reset Password Form (shown after clicking email link) -->
+          <form id="reset-password-form" class="auth-form" action="/reset-password/{{ reset_token }}" method="post">
+            <h1>Set New Password</h1>
+            <div class="form-group">
+              <label for="new-password">New Password</label>
+              <input
+                type="password"
+                id="new-password"
+                name="password"
+                placeholder="Enter new password"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="confirm-new-password">Confirm New Password</label>
+              <input
+                type="password"
+                id="confirm-new-password"
+                name="confirm-password"
+                placeholder="Confirm new password"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <button type="submit" class="form-btn">Reset Password</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -115,25 +173,42 @@
       const formsWrapper = document.querySelector(".forms-wrapper");
       const loginForm = document.getElementById("login-form");
       const signupForm = document.getElementById("signup-form");
+      const forgotPasswordForm = document.getElementById("forgot-password-form");
+      const forgotPasswordBtn = document.getElementById("forgot-password-btn");
+      const backToLoginBtn = document.querySelector(".back-to-login-btn");
+      const spinnerContainer = document.querySelector(".spinner-container");
 
-      // Add event listeners for toggling
+      // Toggle between login and signup
       loginToggle.addEventListener("click", () => {
-        formsWrapper.classList.remove("sign-up-mode"); // Reset to show login form
+        formsWrapper.classList.remove("sign-up-mode");
+        formsWrapper.classList.remove("forgot-password-mode");
         loginToggle.classList.add("active");
         signupToggle.classList.remove("active");
       });
 
       signupToggle.addEventListener("click", () => {
-        formsWrapper.classList.add("sign-up-mode"); // Shift to show signup form
+        formsWrapper.classList.add("sign-up-mode");
+        formsWrapper.classList.remove("forgot-password-mode");
         signupToggle.classList.add("active");
         loginToggle.classList.remove("active");
       });
 
-      // Handle login form submission
-      loginForm.addEventListener("submit", (event) => {
-        event.preventDefault(); // Prevent the default form submission behavior
+      // Toggle forgot password form
+      forgotPasswordBtn.addEventListener("click", () => {
+        formsWrapper.classList.add("forgot-password-mode");
+        formsWrapper.classList.remove("sign-up-mode");
+      });
 
-        // Validate inputs
+      // Back to login from forgot password
+      backToLoginBtn.addEventListener("click", () => {
+        formsWrapper.classList.remove("forgot-password-mode");
+        loginToggle.classList.add("active");
+        signupToggle.classList.remove("active");
+      });
+
+      // Form validation
+      loginForm.addEventListener("submit", (event) => {
+        event.preventDefault();
         const email = document.getElementById("login-email").value;
         const password = document.getElementById("login-password").value;
 
@@ -141,39 +216,38 @@
           alert("Please fill in all fields before logging in.");
           return;
         }
-
-        // Redirect to dashboard
-        //window.location.href = "/dashboard";
-        loginForm.action = "/login";
-        loginForm.method = "post";
         loginForm.submit();
       });
 
-        // Handle signup form submission
-        signupForm.addEventListener("submit", async (event) => {
-          event.preventDefault();
+      signupForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const name = document.getElementById("signup-name").value;
+        const email = document.getElementById("signup-email").value;
+        const password = document.getElementById("signup-password").value;
+        const confirmPassword = document.getElementById("signup-confirm-password").value;
 
-          const name = document.getElementById("signup-name").value;
-          const email = document.getElementById("signup-email").value;
-          const password = document.getElementById("signup-password").value;
-          const confirmPassword = document.getElementById("signup-confirm-password").value;
+        if (!name || !email || !password || !confirmPassword) {
+          alert("Please fill in all fields.");
+          return;
+        }
 
-          if (password !== confirmPassword) {
-              alert("Passwords do not match!");
-              return;
-          }
+        if (password !== confirmPassword) {
+          alert("Passwords do not match!");
+          return;
+        }
 
-          if (!name || !email || !password || !confirmPassword) {
-              alert("Please fill in all fields.");
-              return;
-          }
+        signupForm.submit();
+      });
 
-          // Submit the form
-          signupForm.action = "/signup";
-          signupForm.method = "post";
-          signupForm.submit();
-        });
-
+      forgotPasswordForm.addEventListener("submit", function (e) {
+        e.preventDefault(); 
+            
+        spinnerContainer.style.display = "flex";
+        setTimeout(() => {  
+          spinnerContainer.style.display = "none";
+          forgotPasswordForm.submit();
+        }, 4000);
+      });
     </script>
   </body>
 </html>

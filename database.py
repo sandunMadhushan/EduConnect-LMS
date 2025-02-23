@@ -332,3 +332,107 @@ def send_welcome_email_sync(user_email, name):
     except Exception as e:
         print(f"Error sending email: {e}")
         return False
+
+
+def save_reset_token(email, token, expiry):
+    """
+    Save password reset token to database
+    Returns: True if successful, False if failed
+    """
+    if not conn:
+        return False
+    try:
+        with conn.cursor() as cursor:
+            # First verify user exists
+            sql = "SELECT id FROM users WHERE email = %s"
+            cursor.execute(sql, (email,))
+            user = cursor.fetchone()
+            
+            if not user:
+                return False
+                
+            # Save token
+            sql = """INSERT INTO password_resets (user_id, token, expiry)
+                    VALUES (%s, %s, %s)
+                    ON DUPLICATE KEY UPDATE token = %s, expiry = %s"""
+            cursor.execute(sql, (user[0], token, expiry, token, expiry))
+            conn.commit()
+            return True
+    except Exception as e:
+        print(f"Error saving reset token: {e}")
+        return False
+
+def verify_reset_token(token):
+    """
+    Verify if reset token is valid and not expired
+    Returns: True if valid, False if invalid or expired
+    """
+    if not conn:
+        return False
+    try:
+        with conn.cursor() as cursor:
+            sql = """SELECT user_id, expiry FROM password_resets 
+                    WHERE token = %s AND expiry > NOW()"""
+            cursor.execute(sql, (token,))
+            result = cursor.fetchone()
+            return bool(result)
+    except Exception as e:
+        print(f"Error verifying reset token: {e}")
+        return False
+
+def update_password_with_token(token, new_password):
+    """
+    Update user password using reset token
+    Returns: True if successful, False if failed
+    """
+    if not conn:
+        return False
+    try:
+        with conn.cursor() as cursor:
+            # Get user_id from valid token
+            sql = """SELECT user_id FROM password_resets 
+                    WHERE token = %s AND expiry > NOW()"""
+            cursor.execute(sql, (token,))
+            result = cursor.fetchone()
+            
+            if not result:
+                return False
+            
+            user_id = result[0]
+            
+            # Hash new password
+            hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+            
+            # Update password
+            sql = "UPDATE users SET password = %s WHERE id = %s"
+            cursor.execute(sql, (hashed_password, user_id))
+            
+            # Delete used token
+            sql = "DELETE FROM password_resets WHERE token = %s"
+            cursor.execute(sql, (token,))
+            
+            conn.commit()
+            return True
+    except Exception as e:
+        print(f"Error updating password: {e}")
+        return False
+    
+def get_user_by_email(email):
+    """Get user data by email"""
+    if not conn:
+        return None
+    try:
+        with conn.cursor() as cursor:
+            sql = "SELECT id, name, email FROM users WHERE email = %s"
+            cursor.execute(sql, (email,))
+            user = cursor.fetchone()
+            
+            if user:
+                return {
+                    'id': user[0],
+                    'name': user[1],
+                    'email': user[2]
+                }
+    except Exception as e:
+        print(f"Error getting user by email: {e}")
+    return None
