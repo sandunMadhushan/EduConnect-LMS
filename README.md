@@ -10,6 +10,8 @@
 
 </div>
 
+Standalone desktop application - https://github.com/sandunMadhushan/EduConnect-LMS-Electron-App
+
 EduConnect-LMS is a collaborative learning management system designed to facilitate interaction between students, demonstrators, lecturers, and study groups. The platform integrates AI-powered tools to enhance the learning experience while providing a robust environment for academic collaboration.
 
 ## ✨ Features
